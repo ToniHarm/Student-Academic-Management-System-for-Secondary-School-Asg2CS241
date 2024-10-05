@@ -20,21 +20,37 @@ public class SiteController {
     public String restingPage() {
         return "LoginStudent";
     }
-    @GetMapping("/login-student")
-    public String LoginStudent() {
+    @GetMapping("login-student")
+    public String loginStudent() {
         return "LoginStudent";
+    }
+    @GetMapping("/login-admin")
+    public String loginAdmin() {
+        return "LoginAdmin";
+    }
+    @GetMapping("/login-parent")
+    public String loginParent() {
+        return "LoginParent";
+    }
+    @GetMapping("login-instructor")
+    public String loginInstructor() {
+        return "LoginInstructor";
+    }
+    @PostMapping("/login-student")
+    public String loginStudent(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
+        return "redirect:/StudentDashboard";
     }
     @PostMapping("/login-admin")
     public String loginAdmin(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
-            return "redirect:/AdminDashboard";
+            return "redirect:/CourseAdminDashboard";
     }
-    @GetMapping("/login-parent")
-    public String LoginParent() {
-        return "LoginParent";
+    @PostMapping("/login-parent")
+    public String loginParent(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
+        return "redirect:/ParentDashboard";
     }
-    @GetMapping("/login-instructor")
-    public String LoginInstructor() {
-        return "LoginInstructor";
+    @PostMapping("/login-instructor")
+    public String loginInstructor(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
+        return "redirect:/CourseInstructorDashboard";
     }
 
 
@@ -68,12 +84,12 @@ public class SiteController {
         return "StudentDashboard";
     }
 
-    @GetMapping("/AdminDashboard")
+    @GetMapping("/CourseAdminDashboard")
     public String showAdminDashboard() {
         return "CourseAdminDashboard";  // Return the admin dashboard view
     }
 
-    @GetMapping("/InstructorDashboard")
+    @GetMapping("/CourseInstructorDashboard")
     public String showInstructorDashboard() {
         return "CourseInstructorDashboard";  // Return the student dashboard view
     }
