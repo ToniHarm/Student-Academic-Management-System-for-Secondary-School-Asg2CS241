@@ -1,0 +1,96 @@
+package com.example.Asg2CS241.Entity;
+
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name =  "student")
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long stuid;
+    @Column(name = "email", unique = true)
+    private String email;
+    private String dob;
+    private String fname;
+    private String lname;
+    private String phone;
+    private String address;
+    private String password;
+    private Integer linkcode;
+
+
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public Integer getLinkcode() {
+        return linkcode;
+    }
+
+    public Long getStuid() {
+        return stuid;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getFname() {
+        return fname;
+    }
+
+    public String getLname() {
+        return lname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setStuid(Long stuid) {
+        this.stuid = stuid;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setFname(String fname) {
+        this.fname = fname;
+    }
+
+    public void setLinkcode(Integer linkcode) {
+        this.linkcode = linkcode;
+    }
+
+    public void setLname(String lname) {
+        this.lname = lname;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+}
