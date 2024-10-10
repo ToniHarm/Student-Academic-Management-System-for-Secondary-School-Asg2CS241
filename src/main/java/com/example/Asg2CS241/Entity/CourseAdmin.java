@@ -11,7 +11,7 @@ public class CourseAdmin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private Long couradminid;
+    private Long courseadminid;
     private String email;
     private String dob;
     private String fname;
@@ -20,12 +20,12 @@ public class CourseAdmin {
     private String address;
     private String password;
 
-    public Long getCouradminid() {
-        return couradminid;
+    public Long getCourseadminid() {
+        return courseadminid;
     }
 
-    public void setCouradminid(Long couradminid) {
-        this.couradminid = couradminid;
+    public void setCourseadminid(Long couradminid) {
+        this.courseadminid = couradminid;
     }
 
     public void setEmail(String email) {
