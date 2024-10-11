@@ -4,12 +4,19 @@ import com.example.Asg2CS241.Entity.CourseAdmin;
 import com.example.Asg2CS241.Entity.CourseInstructor;
 import com.example.Asg2CS241.Entity.Parent;
 import com.example.Asg2CS241.Entity.Student;
+import com.example.Asg2CS241.Repository.StudentRepository;
+import com.example.Asg2CS241.Security.CustomCourseInstructorDetails;
+import com.example.Asg2CS241.Security.CustomStudentDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import com.example.Asg2CS241.Service.UserService;
+
+import java.util.Optional;
 
 
 @Controller
@@ -79,8 +86,21 @@ public class SiteController {
         return "RegisterInstructor";  // This returns the 'register.html' template
     }
 
+    @Autowired
+    private UserService stuRepo;
+
     @GetMapping("/StudentDashboard")
-    public String showStudentDashboard(){
+    public String showStudentDashboard(Model model) {
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomStudentDetails userDetails = (CustomStudentDetails) authentication.getPrincipal();
+
+        // Fetch the student entity using the student ID from the user details
+        Long studentId = userDetails.getId();  // Assuming CustomStudentDetails has getId()
+
+        // Add the studentId to the model so it can be accessed in the view
+        model.addAttribute("studentId", studentId);
+
         return "StudentDashboard";
     }
 
@@ -90,13 +110,26 @@ public class SiteController {
     }
 
     @GetMapping("/CourseInstructorDashboard")
-    public String showInstructorDashboard() {
-        return "CourseInstructorDashboard";  // Return the student dashboard view
+    public String showInstructorDashboard(Model model) {
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomCourseInstructorDetails userDetails = (CustomCourseInstructorDetails) authentication.getPrincipal();
+
+        // Fetch the course instructor ID from the user details
+        Long courseinstructorId = userDetails.getId();
+
+        // Add the instructor ID to the model so it can be used in the view
+        model.addAttribute("courseInstructorId", courseinstructorId);
+
+        return "CourseInstructorDashboard";  // This is your Thymeleaf template for the dashboard
     }
 
     @GetMapping("/ParentDashboard")
     public String showParentDashboard() {
         return "ParentDashboard";  // Return the student dashboard view
     }
+
+
+
 
 }

@@ -49,10 +49,10 @@ public class WebSecurityConfig {
         // Define your security rules
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/CourseAdminDashboard").hasRole("ADMIN")
-                        .requestMatchers("/ParentDashboard").hasRole("PARENT")
-                        .requestMatchers("/StudentDashboard").hasRole("STUDENT")
-                        .requestMatchers("/CourseInstructorDashboard").hasRole("INSTRUCTOR")
+                        .requestMatchers("/CourseAdminDashboard/**").hasRole("ADMIN")
+                        .requestMatchers("/ParentDashboard/**").hasRole("PARENT")
+                        .requestMatchers("/StudentDashboard/**").hasRole("STUDENT")
+                        .requestMatchers("/CourseInstructorDashboard/**").hasRole("INSTRUCTOR")
                         .anyRequest().permitAll()  // Permit all other requests
                 )
                 .formLogin(login -> login
@@ -62,27 +62,27 @@ public class WebSecurityConfig {
                         .successHandler(customAuthenticationSuccessHandler)
                         .permitAll()
                 )
-                .formLogin(login -> login
-                        .loginPage("/login-parent") // Specify the parent login page
-                        .usernameParameter("email")
-                        .defaultSuccessUrl("/ParentDashboard")
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .permitAll()
-                )
-                .formLogin(login -> login
-                        .loginPage("/login-instructor") // Specify the instructor login page
-                        .usernameParameter("email")
-                        .defaultSuccessUrl("/CourseInstructorDashboard")
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .permitAll()
-                )
-                .formLogin(login -> login
-                        .loginPage("/login-admin") // Specify the admin login page
-                        .usernameParameter("email")
-                        .defaultSuccessUrl("/CourseAdminDashboard")
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .permitAll()
-                )
+//                .formLogin(login -> login
+//                        .loginPage("/login-parent") // Specify the parent login page
+//                        .usernameParameter("email")
+//                        .defaultSuccessUrl("/ParentDashboard")
+//                        .successHandler(customAuthenticationSuccessHandler)
+//                        .permitAll()
+//                )
+//                .formLogin(login -> login
+//                        .loginPage("/login-instructor") // Specify the instructor login page
+//                        .usernameParameter("email")
+//                        .defaultSuccessUrl("/CourseInstructorDashboard")
+//                        .successHandler(customAuthenticationSuccessHandler)
+//                        .permitAll()
+//                )
+//                .formLogin(login -> login
+//                        .loginPage("/login-admin") // Specify the admin login page
+//                        .usernameParameter("email")
+//                        .defaultSuccessUrl("/CourseAdminDashboard")
+//                        .successHandler(customAuthenticationSuccessHandler)
+//                        .permitAll()
+//                )
                 .logout(logout -> logout
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)

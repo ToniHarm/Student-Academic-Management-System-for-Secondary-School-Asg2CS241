@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface CourseInstructorRepository extends JpaRepository<CourseInstructor, Long> {
     @Query("SELECT c FROM CourseInstructor c WHERE c.email = ?1")
     CourseInstructor findByEmail(String email);
+
+    CourseInstructor findBycourseteacherid(Long teacherId);
 }

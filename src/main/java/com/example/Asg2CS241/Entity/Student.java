@@ -3,6 +3,9 @@ package com.example.Asg2CS241.Entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name =  "student")
 public class Student {
@@ -19,6 +22,16 @@ public class Student {
     private String password;
     private Integer linkcode;
 
+
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "student_class",joinColumns = @JoinColumn(name = "student_id",referencedColumnName = "stuid"),  // Foreign key for student
+            inverseJoinColumns = @JoinColumn(name = "class_id",referencedColumnName = "classid")  // Foreign key for course
+    )
+    private Set<Course> courses = new HashSet<>();
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
 
 
 
