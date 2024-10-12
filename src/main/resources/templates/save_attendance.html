@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Save Student Attendance</title>
+</head>
+<body>
+<h1>Save Student Attendance</h1>
+<form method="POST" th:action="@{/CourseInstructorDashboard/attendance/{classid}/save}" th:object="${Attendance}">
+    <label for="student">Select Student:</label>
+    <select name="studentId" id="student">
+        <option th:each="student : ${course.students}"
+                th:value="${student.id}"
+                th:text="${student.fname + ' ' + student.lname}"></option>
+    </select>
+
+    <label for="week">Select Week:</label>
+    <select name="week" id="week">
+        <option th:each="week : ${#numbers.sequence(1, 14)}"
+                th:value="${week}"
+                th:text="'Week ' + ${week}"></option>
+    </select>
+
+    <label for="dayOfWeek">Select Day:</label>
+    <select name="dayOfWeek" id="dayOfWeek">
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+    </select>
+
+    <label>Attendance Status:</label>
+    <input type="radio" name="status" value="present"> Present
+    <input type="radio" name="status" value="absent"> Absent
+    <input type="radio" name="status" value="late"> Late
+
+    <button type="submit">Submit Attendance</button>
+</form>
+</body>
+</html>

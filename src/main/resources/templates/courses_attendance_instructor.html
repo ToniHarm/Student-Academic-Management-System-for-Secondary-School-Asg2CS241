@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Records</title>
+</head>
+<body>
+<h2>Attendance Records - Week </h2>
+<a class="btn btn-primary" th:href="@{'/CourseInstructorDashboard'+ '/attendance' +  '/setAttendance'}">Add Attendance</a>
+<!--<table border="1">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>Student ID</th>-->
+<!--        <th>Monday</th>-->
+<!--        <th>Tuesday</th>-->
+<!--        <th>Wednesday</th>-->
+<!--        <th>Thursday</th>-->
+<!--        <th>Friday</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="record : ${attendanceRecords.content}">-->
+<!--        <td th:text="${record.studentId}"></td>-->
+<!--        <td th:text="${record.attendanceStatus['monday']}"></td>-->
+<!--        <td th:text="${record.attendanceStatus['tuesday']}"></td>-->
+<!--        <td th:text="${record.attendanceStatus['wednesday']}"></td>-->
+<!--        <td th:text="${record.attendanceStatus['thursday']}"></td>-->
+<!--        <td th:text="${record.attendanceStatus['friday']}"></td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+
+<!--<div>-->
+<!--        <span th:if="${currentPage > 0}">-->
+<!--            <a th:href="@{/attendance(week=${currentWeek}, page=${currentPage - 1})}">Previous</a>-->
+<!--        </span>-->
+<!--    <span th:if="${currentPage < totalPages - 1}">-->
+<!--            <a th:href="@{/attendance(week=${currentWeek}, page=${currentPage + 1})}">Next</a>-->
+<!--        </span>-->
+<!--</div>-->
+</body>
+</html>
