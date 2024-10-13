@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name =  "class")
@@ -22,6 +23,8 @@ public class Course {
 
     @OneToMany(mappedBy = "course")
     private List<Attendance> attendanceRecords = new ArrayList<>();
+
+
 
     public Long getClassid() {
         return classid;

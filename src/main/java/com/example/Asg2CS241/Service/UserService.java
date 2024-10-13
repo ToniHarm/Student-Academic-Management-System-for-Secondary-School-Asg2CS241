@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -73,6 +74,12 @@ public class UserService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
+
+//        Optional<Attendance> existingAttendance = attendanceRepository.findByStudentAndweekAndday_of_week(studentId, week, dayOfWeek);
+//        if (existingAttendance.isPresent()) {
+//            throw new RuntimeException("Attendance record already exists for this student for the specified week and day.");
+//        }
+
         Attendance attendance = new Attendance();
         attendance.setStudent(student);
         attendance.setCourse(course);
@@ -86,5 +93,9 @@ public class UserService {
     // Method to fetch a course by its ID
     public Course getCourseById(Long classId) {
         return courseRepository.findById(classId).orElse(null);  // Assuming you're using JPA or a similar repository pattern
+    }
+
+    public Set<Student> getStudentsByCourseId(Long classid) {
+        return stuRepo.findStudentsByCourseId(classid);
     }
 }

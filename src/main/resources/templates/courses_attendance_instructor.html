@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2>Attendance Records - Week </h2>
-<a class="btn btn-primary" th:href="@{'/CourseInstructorDashboard'+ '/attendance' +  '/setAttendance'}">Add Attendance</a>
+<a class="btn btn-primary" th:href="@{'/CourseInstructorDashboard/'+ ${courseInstructorId} + '/attendance/' +  ${classid} + '/setAttendance'}">Add Attendance</a>
 <!--<table border="1">-->
 <!--    <thead>-->
 <!--    <tr>-->

@@ -6,6 +6,7 @@ import com.example.Asg2CS241.Entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 //    // Retrieve attendance records by student and course
@@ -19,5 +20,9 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 //
 //    // Retrieve attendance records by course, week, and day of the week
 //    List<Attendance> findByCourseAndWeekAndDay_of_week(Course course, int week, String day_of_week);
+
+
+//    Optional<Attendance> findByStudentAndweekAndday_of_week(Long studentId, int week, String dayOfWeek);
+
 
 }

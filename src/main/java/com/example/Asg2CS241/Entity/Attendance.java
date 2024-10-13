@@ -4,7 +4,9 @@ package com.example.Asg2CS241.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name =  "attendance")
+@Table(name = "attendance", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"student_id", "week", "day_of_week"})
+})
 public class Attendance {
 
     @Id
@@ -15,11 +17,11 @@ public class Attendance {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "stuid")
+    @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "classid")
+    @JoinColumn(name = "class_id", nullable = false)
     private Course course;
 
     public Long getAttendance_id() {

@@ -6,11 +6,11 @@
 </head>
 <body>
 <h1>Save Student Attendance</h1>
-<form method="POST" th:action="@{/CourseInstructorDashboard/attendance/{classid}/save}" th:object="${Attendance}">
+<form method="POST" th:action="@{'/CourseInstructorDashboard/'+ ${courseInstructorId}+'/attendance/' + ${classid} + '/save'}" th:object="${attendance}">
     <label for="student">Select Student:</label>
     <select name="studentId" id="student">
-        <option th:each="student : ${course.students}"
-                th:value="${student.id}"
+        <option th:each="student : ${students}"
+                th:value="${student.stuid}"
                 th:text="${student.fname + ' ' + student.lname}"></option>
     </select>
 
@@ -34,6 +34,8 @@
     <input type="radio" name="status" value="present"> Present
     <input type="radio" name="status" value="absent"> Absent
     <input type="radio" name="status" value="late"> Late
+
+
 
     <button type="submit">Submit Attendance</button>
 </form>
