@@ -3,9 +3,13 @@ package com.example.Asg2CS241.Service;
 import com.example.Asg2CS241.Entity.*;
 import com.example.Asg2CS241.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -90,6 +94,10 @@ public class UserService {
         attendanceRepository.save(attendance);
     }
 
+    public List<Attendance> getAttendanceByClassId(Long classId) {
+        return attendanceRepository.findByCourse_Classid(classId);
+    }
+
     // Method to fetch a course by its ID
     public Course getCourseById(Long classId) {
         return courseRepository.findById(classId).orElse(null);  // Assuming you're using JPA or a similar repository pattern
@@ -97,5 +105,22 @@ public class UserService {
 
     public Set<Student> getStudentsByCourseId(Long classid) {
         return stuRepo.findStudentsByCourseId(classid);
+    }
+
+    // Get paginated attendance records by week and page
+    public Page<Attendance> getAttendanceByWeekAndPage(Long classId, int week, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        // Fetch attendance records for the given class and specific week
+        return attendanceRepository.findByCourse_ClassidAndWeek(classId, week, pageable);
+    }
+
+    // Count total number of weeks with attendance records
+    public int getTotalWeeksForClass(Long classId) {
+        // This assumes you have a "week" field in your Attendance entity
+        return attendanceRepository.countDistinctWeeksByClassId(classId);
+    }
+
+    public List<Attendance> getStudentAttendanceForCourse(Long studentId, Long classId) {
+        return attendanceRepository.findByStudentIdAndClassId(studentId, classId);
     }
 }

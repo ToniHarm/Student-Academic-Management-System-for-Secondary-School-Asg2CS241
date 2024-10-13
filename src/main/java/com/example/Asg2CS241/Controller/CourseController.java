@@ -7,6 +7,7 @@ import com.example.Asg2CS241.Entity.CourseInstructor;
 import com.example.Asg2CS241.Entity.Student;
 import com.example.Asg2CS241.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class CourseController {
 
         // Add the list of courses to the model
         model.addAttribute("listCourses", courses);
+        model.addAttribute("studentId", studentId);
 
         // Return the name of the HTML template for displaying the courses
         return "student_courses"; // This should be the name of your Thymeleaf template (student_courses.html)
@@ -42,12 +44,40 @@ public class CourseController {
 
 
     @GetMapping("/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}")
-    public String getAttendancePageInstructor(@PathVariable("courseinstructorid") Long instructorId,@PathVariable("classid") Long classId, Model model) {
-        Course course = userService.getCourseById(classId);  // Use the new method to fetch the course
+    public String getAttendancePageInstructor(
+            @PathVariable("classid") Long classId,
+            @PathVariable("courseinstructorid") Long instructorId,
+            @RequestParam(value = "week", defaultValue = "1") int currentWeek,
+            @RequestParam(value = "page", defaultValue = "0") int currentPage,
+            Model model) {
+
+        // Fetch the number of unique weeks (used for pagination)
+        int totalWeeks = userService.getTotalWeeksForClass(classId);
+
+        // Ensure that currentWeek is within valid bounds
+        if (currentWeek < 1 || currentWeek > totalWeeks) {
+            currentWeek = 1;  // Set default to week 1 if out of bounds
+        }
+
+        // Fetch attendance records for the specific week and page
+        Page<Attendance> attendanceRecords = userService.getAttendanceByWeekAndPage(classId, currentWeek, currentPage, 50);
+
+        // Fetch course details
+        Course course = userService.getCourseById(classId);
+
+        // Add data to the model
         model.addAttribute("course", course);
         model.addAttribute("courseInstructorId", instructorId);
-        return "courses_attendance_instructor";  // Return the Thymeleaf template
+        model.addAttribute("attendanceRecords", attendanceRecords.getContent());
+        model.addAttribute("currentWeek", currentWeek);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalWeeks);  // Total weeks represent total pages
+
+        return "courses_attendance_instructor";
     }
+
+
+
     @RequestMapping("/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}/setAttendance")
     public String showAttendancePage(@PathVariable("classid") Long classid,
                                      @PathVariable("courseinstructorid") Long instructorId,
@@ -92,26 +122,27 @@ public class CourseController {
         return "redirect:/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}";
     }
 
-    // Endpoint to view attendance for a specific course and week
-//    @GetMapping("/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}/week/{week}")
-//    public String viewAttendanceForCourse(@PathVariable("classid") Long classId,
-//                                          @PathVariable("week") int week,
-//                                          Model model) {
-//        List<Attendance> attendanceRecords = userService.getAttendanceForCourseInWeek(classId, week);
-//        model.addAttribute("attendanceRecords", attendanceRecords);
-//        return "attendance_week";  // This should be the name of your Thymeleaf template (attendance_week.html)
-//    }
-//
-//    // Endpoint to view attendance for a specific course, week, and day
-//    @GetMapping("/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}/week/{week}/day/{dayOfWeek}")
-//    public String viewAttendanceForCourseInDay(@PathVariable("classid") Long classId,
-//                                               @PathVariable("week") int week,
-//                                               @PathVariable("dayOfWeek") String dayOfWeek,
-//                                               Model model) {
-//        List<Attendance> attendanceRecords = userService.getAttendanceForCourseInWeekAndDay(classId, week, dayOfWeek);
-//        model.addAttribute("attendanceRecords", attendanceRecords);
-//        return "attendance_day";  // This should be the name of your Thymeleaf template (attendance_day.html)
-//    }
+    @GetMapping("/studentDashboard/{stuid}/attendance/{classid}")
+    public String getStudentAttendance(
+            @PathVariable("stuid") Long studentId,
+            @PathVariable("classid") Long classId,
+            Model model) {
+
+        // Fetch the course details
+        Course course = userService.getCourseById(classId);
+
+        // Fetch all attendance records for the student in the given class
+        List<Attendance> attendanceRecords = userService.getStudentAttendanceForCourse(studentId, classId);
+
+        // Add attributes to the model
+        model.addAttribute("course", course);
+        model.addAttribute("studentId", studentId);
+        model.addAttribute("attendanceRecords", attendanceRecords);
+
+        return "courses_attendance_student";  // Thymeleaf template name
+    }
+
+
 
 
 

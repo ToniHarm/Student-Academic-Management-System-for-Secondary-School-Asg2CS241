@@ -3,7 +3,11 @@ package com.example.Asg2CS241.Repository;
 import com.example.Asg2CS241.Entity.Attendance;
 import com.example.Asg2CS241.Entity.Course;
 import com.example.Asg2CS241.Entity.Student;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,5 +28,15 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
 //    Optional<Attendance> findByStudentAndweekAndday_of_week(Long studentId, int week, String dayOfWeek);
 
+    List<Attendance> findByCourse_Classid(Long classId);
 
+    // Fetch attendance for a specific class and week, with pagination
+    Page<Attendance> findByCourse_ClassidAndWeek(Long classId, int week, Pageable pageable);
+
+    // Count distinct number of weeks for a given class
+    @Query("SELECT COUNT(DISTINCT a.week) FROM Attendance a WHERE a.course.classid = :classId")
+    int countDistinctWeeksByClassId(@Param("classId") Long classId);
+
+    @Query("SELECT a FROM Attendance a WHERE a.student.stuid = :studentId AND a.course.classid = :classId ORDER BY a.week ASC")
+    List<Attendance> findByStudentIdAndClassId(@Param("studentId") Long studentId, @Param("classId") Long classId);
 }
