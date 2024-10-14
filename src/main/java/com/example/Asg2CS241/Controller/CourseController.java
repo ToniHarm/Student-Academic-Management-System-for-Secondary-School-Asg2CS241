@@ -122,7 +122,7 @@ public class CourseController {
         return "redirect:/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}";
     }
 
-    @GetMapping("/studentDashboard/{stuid}/attendance/{classid}")
+    @GetMapping("/StudentDashboard/{stuid}/attendance/{classid}")
     public String getStudentAttendance(
             @PathVariable("stuid") Long studentId,
             @PathVariable("classid") Long classId,

@@ -7,9 +7,11 @@
 </head>
 <body>
 <h2>Attendance Records </h2>
-<a class="btn btn-primary" th:href="@{'/CourseInstructorDashboard/'+ ${courseInstructorId} + '/attendance/' +  ${classid} + '/setAttendance'}">Add Attendance</a>
-<table border="1">
 
+<!-- Add Attendance Link -->
+<a class="btn btn-primary" th:href="@{/CourseInstructorDashboard/{courseInstructorId}/attendance/{classid}/setAttendance(courseInstructorId=${courseInstructorId}, classid=${classid})}">Add Attendance</a>
+
+<table border="1">
     <thead>
     <tr>
         <th>Week</th>
@@ -34,25 +36,22 @@
         <td th:text="${record.day_of_week == 'Friday' ? record.status : ''}"></td>
     </tr>
     </tbody>
-
 </table>
 
-
-
+<!-- Pagination for Weeks -->
 <div th:if="${totalPages > 1}">
     <span th:if="${currentWeek > 1}">
-        <a th:href="@{'/CourseInstructorDashboard/' + ${courseInstructorId} + '/attendance/' + ${course.id} + '?week=' + (${currentWeek - 1})}">
+        <a th:href="@{/CourseInstructorDashboard/{courseInstructorId}/attendance/{classid}(courseInstructorId=${courseInstructorId}, classid=${classid}, week=${currentWeek - 1})}">
             Previous Week
         </a>
     </span>
 
     <span th:if="${currentWeek < totalPages}">
-        <a th:href="@{'/CourseInstructorDashboard/' + ${courseInstructorId} + '/attendance/' + ${course.id} + '?week=' + (${currentWeek + 1})}">
+        <a th:href="@{/CourseInstructorDashboard/{courseInstructorId}/attendance/{classid}(courseInstructorId=${courseInstructorId}, classid=${classid}, week=${currentWeek + 1})}">
             Next Week
         </a>
     </span>
 </div>
-
 
 </body>
 </html>
