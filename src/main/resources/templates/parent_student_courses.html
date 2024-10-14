@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Courses</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<h1 th:text="'Courses for ' + ${student.fname} + ' ' + ${student.lname}"></h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Course ID</th>
+        <th>Course Name</th>
+        <th>Description</th>
+        <th>Attendance</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Loop through the courses -->
+    <tr th:each="course : ${listCourses}">
+        <td th:text="${course.classid}"></td>
+        <td th:text="${course.classname}"></td>
+        <td th:text="${course.classdescription}"></td>
+
+        <td>
+            <a class="btn btn-primary" th:href="@{'/ParentDashboard/' + ${parentId} + '/studentCourses/' + ${student.stuid} + '/attendance/' + ${course.classid}}">Attendance</a>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
