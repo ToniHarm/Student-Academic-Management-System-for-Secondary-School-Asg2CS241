@@ -1,10 +1,8 @@
 package com.example.Asg2CS241.Controller;
 
-import com.example.Asg2CS241.Entity.Attendance;
-import com.example.Asg2CS241.Entity.Course;
+import com.example.Asg2CS241.Entity.*;
 
-import com.example.Asg2CS241.Entity.CourseInstructor;
-import com.example.Asg2CS241.Entity.Student;
+import com.example.Asg2CS241.Repository.MessageRepository;
 import com.example.Asg2CS241.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 @Controller
 public class CourseController {
@@ -65,6 +65,12 @@ public class CourseController {
         // Fetch course details
         Course course = userService.getCourseById(classId);
 
+        // Fetch attendance percentages
+        Map<String, Double> attendancePercentages = userService.getAttendancePercentages(classId);
+
+        // Add attributes to the model
+        model.addAttribute("attendancePercentages", attendancePercentages);
+
         // Add data to the model
         model.addAttribute("course", course);
         model.addAttribute("courseInstructorId", instructorId);
@@ -112,17 +118,33 @@ public class CourseController {
                                  @RequestParam("week") int week,
                                  @RequestParam("dayOfWeek") String dayOfWeek,
                                  @RequestParam("status") String status,
-                                 @PathVariable("courseinstructorid") Long courseInstructorId, // Assuming instructor ID is passed
+                                 @PathVariable("courseinstructorid") Long courseInstructorId,
                                  Model model) {
         Course course = userService.getCourseById(classId);
+        Student student = userService.getStudentById(studentId);
+        Parent parent = student.getParent();  // Get the parent of the student
         model.addAttribute("course", course);
+
         userService.saveAttendance(studentId, classId, week, dayOfWeek, status);
 
-        // Correct redirect with properly resolved variables
+        // If student is marked absent, send a message to the parent
+        if (status.equalsIgnoreCase("absent")) {
+            String messageContent = "Your child, " + student.getFname() + " " + student.getLname() +
+                    " (ID: " + student.getStuid() + "), was marked absent from the course " +
+                    course.getClassname() + " (Class ID: " + classId + ") on " + dayOfWeek +
+                    " during Week " + week + ".";
+            String currentDate = LocalDate.now().toString();  // Current date as a string
+
+            // Save the message to the parent’s inbox
+            userService.sendMessageToParent(parent, messageContent, currentDate);
+        }
+
+        // Redirect back to attendance page
         return "redirect:/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}";
     }
 
-    @GetMapping("/studentDashboard/{stuid}/attendance/{classid}")
+
+    @GetMapping("/StudentDashboard/{stuid}/attendance/{classid}")
     public String getStudentAttendance(
             @PathVariable("stuid") Long studentId,
             @PathVariable("classid") Long classId,
@@ -171,6 +193,15 @@ public class CourseController {
         model.addAttribute("attendanceRecords", attendanceRecords);
 
         return "parent_student_courses_attendance";
+    }
+    @Autowired
+    MessageRepository messageRepository;
+
+    @GetMapping("/ParentDashboard/{parentId}/messages")
+    public String getParentMessages(@PathVariable("parentId") Long parentId, Model model) {
+        List<Message> messages = messageRepository.findByParent_Parentid(parentId);
+        model.addAttribute("messages", messages);
+        return "parents_message";  // Thymeleaf template for displaying messages
     }
 
 

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
@@ -39,4 +40,13 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     @Query("SELECT a FROM Attendance a WHERE a.student.stuid = :studentId AND a.course.classid = :classId ORDER BY a.week ASC")
     List<Attendance> findByStudentIdAndClassId(@Param("studentId") Long studentId, @Param("classId") Long classId);
+
+
+    @Query("SELECT "
+            + "(SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) / COUNT(a)) * 100 AS presentPercentage, "
+            + "(SUM(CASE WHEN a.status = 'late' THEN 1 ELSE 0 END) / COUNT(a)) * 100 AS latePercentage, "
+            + "(SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) / COUNT(a)) * 100 AS absentPercentage "
+            + "FROM Attendance a WHERE a.course.classid = :courseId")
+    Map<String, Double> findAttendancePercentagesByCourseId(@Param("courseId") Long courseId);
+
 }

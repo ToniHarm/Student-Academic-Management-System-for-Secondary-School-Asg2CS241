@@ -7,6 +7,21 @@
 </head>
 <body>
 <h2>Attendance Records </h2>
+
+<table>
+    <tr>
+        <td>Present:</td>
+        <td th:text="${attendancePercentages['presentPercentage']} + '%'"></td>
+    </tr>
+    <tr>
+        <td>Late:</td>
+        <td th:text="${attendancePercentages['latePercentage']} + '%'"></td>
+    </tr>
+    <tr>
+        <td>Absent:</td>
+        <td th:text="${attendancePercentages['absentPercentage']} + '%'"></td>
+    </tr>
+</table>
 <a class="btn btn-primary" th:href="@{'/CourseInstructorDashboard/'+ ${courseInstructorId} + '/attendance/' +  ${classid} + '/setAttendance'}">Add Attendance</a>
 <table border="1">
 

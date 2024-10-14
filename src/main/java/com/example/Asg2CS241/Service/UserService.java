@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Map;
 
 
 @Service
@@ -127,4 +128,23 @@ public class UserService {
     public Set<Student> getStudentsByParentId(Long parentId) {
         return parRepo.findStudentsByParentId(parentId);
     }
+
+    public Map<String, Double> getAttendancePercentages(Long courseId) {
+        return attendanceRepository.findAttendancePercentagesByCourseId(courseId);
+    }
+
+
+    @Autowired
+    private MessageRepository messageRepository;
+
+    public void sendMessageToParent(Parent parent, String messageContent, String date) {
+        Message message = new Message(parent, messageContent, date);
+        messageRepository.save(message);
+    }
+
+    public Student getStudentById(Long studentId) {
+        return stuRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
+    }
+
 }
