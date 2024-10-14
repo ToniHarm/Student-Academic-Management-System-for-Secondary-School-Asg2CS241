@@ -142,6 +142,19 @@ public class CourseController {
         return "courses_attendance_student";  // Thymeleaf template name
     }
 
+    @GetMapping("/parentDashboard/{parentid}")
+    public String getstudentForParent(@PathVariable("parentid") Long parentId, Model model) {
+
+
+
+
+
+
+        model.addAttribute("parentId", parentId);
+
+        return null;
+    }
+
 
 
 

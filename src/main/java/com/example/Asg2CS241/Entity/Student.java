@@ -22,6 +22,10 @@ public class Student {
     private String password;
     private Integer linkcode;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parentid", nullable = false)  // Foreign key for Parent
+    private Parent parent;
+
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "student_class",joinColumns = @JoinColumn(name = "student_id",referencedColumnName = "stuid"),  // Foreign key for student
