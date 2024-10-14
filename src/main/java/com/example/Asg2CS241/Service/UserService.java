@@ -123,4 +123,8 @@ public class UserService {
     public List<Attendance> getStudentAttendanceForCourse(Long studentId, Long classId) {
         return attendanceRepository.findByStudentIdAndClassId(studentId, classId);
     }
+
+    public Set<Student> getStudentsByParentId(Long parentId) {
+        return parRepo.findStudentsByParentId(parentId);
+    }
 }

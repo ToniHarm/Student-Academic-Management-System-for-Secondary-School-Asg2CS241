@@ -142,18 +142,37 @@ public class CourseController {
         return "courses_attendance_student";  // Thymeleaf template name
     }
 
-    @GetMapping("/parentDashboard/{parentid}")
-    public String getstudentForParent(@PathVariable("parentid") Long parentId, Model model) {
+    @GetMapping("/ParentDashboard/{parentid}/studentCourses/{stuid}")
+    public String getstudentCourseForParent(@PathVariable("parentid") Long parentId,
+                                            @PathVariable("stuid") Long studentId,
+                                            Model model) {
 
+        Set<Course> courses = userService.getCoursesForStudent(studentId);
+        Student student = userService.findByStuid(studentId); // Fetch the student entity
 
-
-
-
-
+        model.addAttribute("listCourses", courses);
         model.addAttribute("parentId", parentId);
+        model.addAttribute("studentId", studentId);
+        model.addAttribute("student", student); // Add the student to the model
 
-        return null;
+        return "parent_student_courses";
     }
+
+    @GetMapping("/ParentDashboard/{parentid}/studentCourses/{stuid}/attendance/{classid}")
+    public String getStudentCourseAttendanceForParent(@PathVariable("stuid") Long studentId,
+                                                      @PathVariable("classid") Long classId,
+                                                      @PathVariable("parentid") Long parentId,
+                                                      Model model){
+
+        List<Attendance> attendanceRecords = userService.getStudentAttendanceForCourse(studentId, classId);
+        model.addAttribute("studentId", studentId);
+        model.addAttribute("classId", classId);
+        model.addAttribute("parentId", parentId);
+        model.addAttribute("attendanceRecords", attendanceRecords);
+
+        return "parent_student_courses_attendance";
+    }
+
 
 
 

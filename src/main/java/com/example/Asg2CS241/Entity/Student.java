@@ -20,10 +20,26 @@ public class Student {
     private String phone;
     private String address;
     private String password;
-    private Integer linkcode;
+
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
+
+    public Parent getParent() {
+        return parent;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
+    }
+
+
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentid", nullable = false)  // Foreign key for Parent
+    @JoinColumn(name = "parent_id", nullable = false)  // Foreign key for Parent
     private Parent parent;
 
 
@@ -47,9 +63,7 @@ public class Student {
         return dob;
     }
 
-    public Integer getLinkcode() {
-        return linkcode;
-    }
+
 
     public Long getStuid() {
         return stuid;
@@ -99,9 +113,7 @@ public class Student {
         this.fname = fname;
     }
 
-    public void setLinkcode(Integer linkcode) {
-        this.linkcode = linkcode;
-    }
+
 
     public void setLname(String lname) {
         this.lname = lname;

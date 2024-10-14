@@ -5,7 +5,9 @@ import com.example.Asg2CS241.Entity.CourseInstructor;
 import com.example.Asg2CS241.Entity.Parent;
 import com.example.Asg2CS241.Entity.Student;
 import com.example.Asg2CS241.Repository.StudentRepository;
+import com.example.Asg2CS241.Security.CustomCourseAdminDetails;
 import com.example.Asg2CS241.Security.CustomCourseInstructorDetails;
+import com.example.Asg2CS241.Security.CustomParentDetails;
 import com.example.Asg2CS241.Security.CustomStudentDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -17,11 +19,13 @@ import org.springframework.web.bind.annotation.*;
 import com.example.Asg2CS241.Service.UserService;
 
 import java.util.Optional;
+import java.util.Set;
 
 
 @Controller
 public class SiteController {
-
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/")
     public String restingPage() {
@@ -105,7 +109,19 @@ public class SiteController {
     }
 
     @GetMapping("/CourseAdminDashboard")
-    public String showAdminDashboard() {
+    public String showAdminDashboard(Model model) {
+
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomCourseAdminDetails userDetails = (CustomCourseAdminDetails) authentication.getPrincipal();
+
+        // Fetch the student entity using the student ID from the user details
+        Long courseadminId = userDetails.getId();  // Assuming CustomStudentDetails has getId()
+
+        // Add the studentId to the model so it can be accessed in the view
+        model.addAttribute("courseAdminId", courseadminId);
+
+
         return "CourseAdminDashboard";  // Return the admin dashboard view
     }
 
@@ -125,7 +141,30 @@ public class SiteController {
     }
 
     @GetMapping("/ParentDashboard")
-    public String showParentDashboard() {
+    public String showParentDashboard(Model model) {
+
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomParentDetails userDetails = (CustomParentDetails) authentication.getPrincipal();
+
+        // Fetch the student entity using the student ID from the user details
+        Long parentId = userDetails.getId();  // Assuming CustomStudentDetails has getId()
+
+
+        // Fetch all students linked to the parent
+        Set<Student> students = userService.getStudentsByParentId(parentId);
+        model.addAttribute("students", students);
+        model.addAttribute("parentId", parentId);
+
+
+
+        // Add the studentId to the model so it can be accessed in the view
+        model.addAttribute("parentId", parentId);
+
+
+
+
+
         return "ParentDashboard";  // Return the student dashboard view
     }
 

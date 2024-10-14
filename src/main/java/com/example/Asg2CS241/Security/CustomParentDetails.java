@@ -19,6 +19,9 @@ public class CustomParentDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_PARENT"));
     }
+    public Long getId() {
+        return parent.getParentid();
+    }
 
     @Override
     public String getPassword() {
