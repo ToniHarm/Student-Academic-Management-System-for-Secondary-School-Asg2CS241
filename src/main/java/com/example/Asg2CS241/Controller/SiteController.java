@@ -1,9 +1,6 @@
 package com.example.Asg2CS241.Controller;
 
-import com.example.Asg2CS241.Entity.CourseAdmin;
-import com.example.Asg2CS241.Entity.CourseInstructor;
-import com.example.Asg2CS241.Entity.Parent;
-import com.example.Asg2CS241.Entity.Student;
+import com.example.Asg2CS241.Entity.*;
 import com.example.Asg2CS241.Repository.StudentRepository;
 import com.example.Asg2CS241.Security.CustomCourseAdminDetails;
 import com.example.Asg2CS241.Security.CustomCourseInstructorDetails;
@@ -167,6 +164,42 @@ public class SiteController {
 
         return "ParentDashboard";  // Return the student dashboard view
     }
+
+    @Autowired
+    private UserService courseRepo;
+
+    @GetMapping("/CourseAdminDashboard/register-course")
+    public String showCourseCreatePage(Model model){
+        model.addAttribute("Course", new Course());
+        return "create_course";
+    }
+
+    @RequestMapping(value = "/save-course", method = RequestMethod.POST)
+    public String saveCourse(@ModelAttribute("Course") Course course) {
+
+        courseRepo.save(course);
+
+        return "redirect:/CourseAdminDashboard";
+    }
+
+    @GetMapping("/CourseAdminDashboard/registerStudentToClass")
+    public String showRegistrationForm(Model model) {
+        // Add the DTO object to the model
+        model.addAttribute("studentCourseRegistrationDTO", new StudentCourseRegistrationDTO());
+        return "RegisterStudentToCourse";
+    }
+
+    @PostMapping("/CourseAdminDashboard/registerStudentToClass/save")
+    public String registerStudentToClass(@ModelAttribute StudentCourseRegistrationDTO registrationDTO, Model model) {
+        Long studentId = registrationDTO.getStudentId();
+        Long classId = registrationDTO.getClassId();
+
+        // Add the student to the class via UserService
+        userService.registerStudentToClass(studentId, classId);
+
+        return "redirect:/CourseAdminDashboard";  // Redirect to a success or confirmation page
+    }
+
 
 
 

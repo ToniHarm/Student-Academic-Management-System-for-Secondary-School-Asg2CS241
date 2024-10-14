@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register Student to Class</title>
+</head>
+<body>
+
+<h2>Register Student to Class</h2>
+
+<form action="#" th:action="@{/CourseAdminDashboard/registerStudentToClass/save}" th:object="${studentCourseRegistrationDTO}" method="post">
+    <div>
+        <label for="studentId">Student ID:</label>
+        <input type="number" id="studentId" th:field="*{studentId}" required />
+    </div>
+
+    <div>
+        <label for="classId">Class ID:</label>
+        <input type="number" id="classId" th:field="*{classId}" required />
+    </div>
+
+    <div>
+        <button type="submit">Register</button>
+    </div>
+</form>
+
+</body>
+</html>

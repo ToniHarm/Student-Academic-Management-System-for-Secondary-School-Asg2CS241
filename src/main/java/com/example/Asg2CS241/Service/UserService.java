@@ -31,6 +31,9 @@ public class UserService {
     @Autowired
     private CourseInstructorRepository courTeacherRepo;
 
+    @Autowired
+    private ClassRepository classRepo;
+
 
     public void save(Student Student) {
         stuRepo.save(Student);
@@ -47,6 +50,10 @@ public class UserService {
 
     public void save(CourseAdmin CourseAdmin){
         courAdminRepo.save(CourseAdmin);
+    }
+
+    public void save(Course Course){
+        classRepo.save(Course);
     }
 
 
@@ -145,6 +152,17 @@ public class UserService {
     public Student getStudentById(Long studentId) {
         return stuRepo.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
+    }
+
+    public void registerStudentToClass(Long studentId, Long classId) {
+        Student student = stuRepo.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
+        Course course = courseRepository.findById(classId).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        // Add the course to the student's courses set
+        student.getCourses().add(course);
+
+        // Save the student back to the repository
+        stuRepo.save(student);
     }
 
 }
