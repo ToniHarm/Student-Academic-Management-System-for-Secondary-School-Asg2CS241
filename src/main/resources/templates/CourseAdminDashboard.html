@@ -5,7 +5,18 @@
     <title>Course Admin Dashboard</title>
 </head>
 <body>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
     <h1>Course Admin Dashboard</h1>
+
+<a class="btn btn-primary" th:href="@{'/CourseAdminDashboard/register-student'}">Register Student</a>
+<br>
+<a class="btn btn-primary" th:href="@{'/CourseAdminDashboard/register-parent'}">Register Parent</a>
+<br>
+<a class="btn btn-primary" th:href="@{'/CourseAdminDashboard/register-instructor'}">Register Course Instructor</a>
+<br>
+<a class="btn btn-primary" th:href="@{'/CourseAdminDashboard/register-admin'}">Register Course Admin</a>
 
 </body>
 </html>

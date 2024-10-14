@@ -84,6 +84,8 @@ public class WebSecurityConfig {
 //                        .permitAll()
 //                )
                 .logout(logout -> logout
+                        .logoutUrl("/logout")  // URL to trigger the logout
+                        .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .logoutSuccessUrl("/")  // Redirect to home page after logout

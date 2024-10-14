@@ -5,6 +5,9 @@
     <title>Save Student Attendance</title>
 </head>
 <body>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
 <h1>Save Student Attendance</h1>
 <form method="POST" th:action="@{'/CourseInstructorDashboard/'+ ${courseInstructorId}+'/attendance/' + ${classid} + '/save'}" th:object="${attendance}">
     <label for="student">Select Student:</label>

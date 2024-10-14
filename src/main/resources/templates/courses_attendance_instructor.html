@@ -54,15 +54,16 @@
 
 
 
+<!-- Pagination for Weeks -->
 <div th:if="${totalPages > 1}">
     <span th:if="${currentWeek > 1}">
-        <a th:href="@{'/CourseInstructorDashboard/' + ${courseInstructorId} + '/attendance/' + ${course.id} + '?week=' + (${currentWeek - 1})}">
+        <a th:href="@{/CourseInstructorDashboard/{courseInstructorId}/attendance/{classid}(courseInstructorId=${courseInstructorId}, classid=${classid}, week=${currentWeek - 1})}">
             Previous Week
         </a>
     </span>
 
     <span th:if="${currentWeek < totalPages}">
-        <a th:href="@{'/CourseInstructorDashboard/' + ${courseInstructorId} + '/attendance/' + ${course.id} + '?week=' + (${currentWeek + 1})}">
+        <a th:href="@{/CourseInstructorDashboard/{courseInstructorId}/attendance/{classid}(courseInstructorId=${courseInstructorId}, classid=${classid}, week=${currentWeek + 1})}">
             Next Week
         </a>
     </span>

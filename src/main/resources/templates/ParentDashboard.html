@@ -5,6 +5,9 @@
     <title>Parent Dashboard</title>
 </head>
 <body>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
 <h1>Parent Dashboard</h1>
 <a th:href="@{'/ParentDashboard/' + ${parentId} +'/messages'}">Inbox</a>
 <table border="1">

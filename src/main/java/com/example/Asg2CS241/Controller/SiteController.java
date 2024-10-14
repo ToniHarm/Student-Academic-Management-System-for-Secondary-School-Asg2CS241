@@ -66,25 +66,25 @@ public class SiteController {
 
 
 
-    @GetMapping("/register-student")
+    @GetMapping("/CourseAdminDashboard/register-student")
     public String showRegisterStudent(Model model) {
         model.addAttribute("Student", new Student());
         return "RegisterStudent";  // This returns the 'register.html' template
     }
 
-    @GetMapping("/register-parent")
+    @GetMapping("/CourseAdminDashboard/register-parent")
     public String showRegisterParent(Model model) {
         model.addAttribute("Parent", new Parent());
         return "RegisterParent";  // This returns the 'register.html' template
     }
 
-    @GetMapping("/register-admin")
+    @GetMapping("/CourseAdminDashboard/register-admin")
     public String showRegisterAdmin(Model model) {
         model.addAttribute("CourseAdmin", new CourseAdmin());
         return "RegisterAdmin";  // This returns the 'register.html' template
     }
 
-    @GetMapping("/register-instructor")
+    @GetMapping("/CourseAdminDashboard/register-instructor")
     public String showRegisterInstructor(Model model) {
         model.addAttribute("CourseInstructor", new CourseInstructor());
         return "RegisterInstructor";  // This returns the 'register.html' template

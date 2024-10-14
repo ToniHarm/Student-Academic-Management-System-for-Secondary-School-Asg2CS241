@@ -5,7 +5,12 @@
     <title>Student Dashboard</title>
 </head>
 <body>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
     <h1>Student Dashboard</h1>
     <a class="btn btn-primary" th:href="@{'/StudentDashboard/' + ${studentId}}">Courses</a>
+
+
 </body>
 </html>
