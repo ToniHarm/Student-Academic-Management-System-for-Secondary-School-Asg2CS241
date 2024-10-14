@@ -1,8 +1,6 @@
 package com.example.Asg2CS241.Repository;
 
 import com.example.Asg2CS241.Entity.Attendance;
-import com.example.Asg2CS241.Entity.Course;
-import com.example.Asg2CS241.Entity.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,4 +37,11 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     @Query("SELECT a FROM Attendance a WHERE a.student.stuid = :studentId AND a.course.classid = :classId ORDER BY a.week ASC")
     List<Attendance> findByStudentIdAndClassId(@Param("studentId") Long studentId, @Param("classId") Long classId);
+
+    // Find attendance by student ID, week, and day of the week
+    @Query("SELECT a FROM Attendance a WHERE a.student.stuid = :studentId AND a.week = :week AND a.day_of_week = :dayOfWeek")
+    Optional<Attendance> findByWeekAndStudentIdAndDayOfWeek(@Param("studentId") Long studentId,
+                                                            @Param("week") int week,
+                                                            @Param("dayOfWeek") String dayOfWeek);
+
 }

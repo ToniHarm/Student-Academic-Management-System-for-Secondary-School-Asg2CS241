@@ -5,6 +5,7 @@ import com.example.Asg2CS241.Entity.Course;
 
 import com.example.Asg2CS241.Entity.CourseInstructor;
 import com.example.Asg2CS241.Entity.Student;
+import com.example.Asg2CS241.Service.AttendanceService;
 import com.example.Asg2CS241.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,11 +14,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 @Controller
 public class CourseController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AttendanceService attendanceService;
 
     // Endpoint for Student to view their courses
     @GetMapping("/StudentDashboard/{stuid}")
@@ -77,7 +81,6 @@ public class CourseController {
     }
 
 
-
     @RequestMapping("/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}/setAttendance")
     public String showAttendancePage(@PathVariable("classid") Long classid,
                                      @PathVariable("courseinstructorid") Long instructorId,
@@ -92,7 +95,6 @@ public class CourseController {
         Attendance attendance = new Attendance();
 
 
-
         // Add attributes to the model
         model.addAttribute("attendance", attendance);
         model.addAttribute("course", course);
@@ -101,9 +103,6 @@ public class CourseController {
 
         return "save_attendance";  // Return the Thymeleaf template name
     }
-
-
-
 
 
     @PostMapping("/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}/save")
@@ -146,14 +145,82 @@ public class CourseController {
     public String getstudentForParent(@PathVariable("parentid") Long parentId, Model model) {
 
 
-
-
-
-
         model.addAttribute("parentId", parentId);
 
         return null;
     }
+
+    // Search attendance
+    @GetMapping("/CourseInstructorDashboard/{courseInstructorId}/attendance/search")
+    public String searchAttendance(@PathVariable Long courseInstructorId,
+                                   @RequestParam int week,
+                                   @RequestParam String dayOfWeek,
+                                   @RequestParam Long studentId,
+                                   Model model) {
+        Optional<Attendance> searchedRecord = attendanceService.findByStudentIdAndWeekAndDayOfWeek(studentId, week, dayOfWeek);
+
+        if (searchedRecord.isPresent()) {
+            model.addAttribute("searchedAttendanceRecord", searchedRecord.get());
+            model.addAttribute("courseInstructorId", courseInstructorId);
+            return "courses_attendance_instructor"; // Return a detail view for the attendance record
+        } else {
+            model.addAttribute("error", "No records found for the provided attendance ID and day.");
+            return "courses_attendance_instructor"; // Return to attendance instructor page with error
+        }
+    }
+
+    // Update attendance record
+    @PostMapping("/CourseInstructorDashboard/{courseInstructorId}/attendance/edit")
+    public String updateAttendance(@PathVariable Long courseInstructorId,
+                                   @RequestParam Long studentId,
+                                   @RequestParam int week,
+                                   @RequestParam String dayOfWeek,
+                                   @RequestParam String status,
+                                   Model model) {
+        // Find the existing attendance record
+        Optional<Attendance> existingRecord = attendanceService.findByStudentIdAndWeekAndDayOfWeek(studentId, week, dayOfWeek);
+
+        if (existingRecord.isPresent()) {
+            // Update the record with the new status
+            Attendance attendance = existingRecord.get();
+            attendance.setStatus(status);
+            attendanceService.saveAttendance(attendance); // Save updated record
+
+            // Redirect to the updated attendance page
+//            return "redirect:/CourseInstructorDashboard/" + courseInstructorId + "/attendance/{classid}";
+            return "courses_attendance_instructor";
+        } else {
+            model.addAttribute("error", "No record found for the specified student, week, and day.");
+            return "courses_attendance_instructor"; // Return with error
+        }
+    }
+
+    // Delete attendance record
+    @PostMapping("/CourseInstructorDashboard/{courseInstructorId}/attendance/delete")
+    public String deleteAttendance(@PathVariable Long courseInstructorId,
+                                   @RequestParam Long studentId,
+                                   @RequestParam int week,
+                                   @RequestParam String dayOfWeek,
+                                   Model model) {
+        // Find the existing attendance record
+        Optional<Attendance> existingRecord = attendanceService.findByStudentIdAndWeekAndDayOfWeek(studentId, week, dayOfWeek);
+
+        if (existingRecord.isPresent()) {
+            // Delete the record
+            attendanceService.deleteAttendance(existingRecord.get());
+
+            // Redirect to the attendance page after deletion
+            return "courses_attendance_instructor";
+//            return "redirect:/CourseInstructorDashboard/" + courseInstructorId + "/attendance/{classid}";
+        } else {
+            model.addAttribute("error", "No record found to delete.");
+            return "courses_attendance_instructor"; // Return with error
+        }
+    }
+
+
+
+
 
 
 
