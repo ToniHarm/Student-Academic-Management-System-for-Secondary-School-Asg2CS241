@@ -11,9 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 @Controller
 public class CourseController {
     @Autowired
@@ -148,13 +147,31 @@ public class CourseController {
         // Fetch all attendance records for the student in the given class
         List<Attendance> attendanceRecords = userService.getStudentAttendanceForCourse(studentId, classId);
 
+        // Create a map to store weekly attendance records
+        Map<Integer, WeeklyAttendanceDTO> weeklyAttendanceMap = new HashMap<>();
+
+        for (Attendance record : attendanceRecords) {
+            int week = record.getWeek();
+            WeeklyAttendanceDTO dto = weeklyAttendanceMap.getOrDefault(week, new WeeklyAttendanceDTO());
+
+            dto.setWeek(week);
+            dto.setStudentName(record.getStudent().getFname() + " " + record.getStudent().getLname());
+            dto.getDailyAttendance().put(record.getDay_of_week(), record.getStatus());
+
+            weeklyAttendanceMap.put(week, dto);
+        }
+
+        // Convert the map to a list of WeeklyAttendanceDTO
+        List<WeeklyAttendanceDTO> weeklyAttendanceList = new ArrayList<>(weeklyAttendanceMap.values());
+
         // Add attributes to the model
         model.addAttribute("course", course);
         model.addAttribute("studentId", studentId);
-        model.addAttribute("attendanceRecords", attendanceRecords);
+        model.addAttribute("weeklyAttendanceList", weeklyAttendanceList);
 
         return "courses_attendance_student";  // Thymeleaf template name
     }
+
 
     @GetMapping("/ParentDashboard/{parentid}/studentCourses/{stuid}")
     public String getstudentCourseForParent(@PathVariable("parentid") Long parentId,
@@ -173,19 +190,41 @@ public class CourseController {
     }
 
     @GetMapping("/ParentDashboard/{parentid}/studentCourses/{stuid}/attendance/{classid}")
-    public String getStudentCourseAttendanceForParent(@PathVariable("stuid") Long studentId,
-                                                      @PathVariable("classid") Long classId,
-                                                      @PathVariable("parentid") Long parentId,
-                                                      Model model){
+    public String getStudentCourseAttendanceForParent(
+            @PathVariable("stuid") Long studentId,
+            @PathVariable("classid") Long classId,
+            @PathVariable("parentid") Long parentId,
+            Model model) {
 
+        // Fetch all attendance records for the student in the given class
         List<Attendance> attendanceRecords = userService.getStudentAttendanceForCourse(studentId, classId);
+
+        // Create a map to store weekly attendance records
+        Map<Integer, WeeklyAttendanceDTO> weeklyAttendanceMap = new HashMap<>();
+
+        for (Attendance record : attendanceRecords) {
+            int week = record.getWeek();
+            WeeklyAttendanceDTO dto = weeklyAttendanceMap.getOrDefault(week, new WeeklyAttendanceDTO());
+
+            dto.setWeek(week);
+            dto.setStudentName(record.getStudent().getFname() + " " + record.getStudent().getLname());
+            dto.getDailyAttendance().put(record.getDay_of_week(), record.getStatus());
+
+            weeklyAttendanceMap.put(week, dto);
+        }
+
+        // Convert the map to a list of WeeklyAttendanceDTO
+        List<WeeklyAttendanceDTO> weeklyAttendanceList = new ArrayList<>(weeklyAttendanceMap.values());
+
+        // Add attributes to the model
         model.addAttribute("studentId", studentId);
         model.addAttribute("classId", classId);
         model.addAttribute("parentId", parentId);
-        model.addAttribute("attendanceRecords", attendanceRecords);
+        model.addAttribute("weeklyAttendanceList", weeklyAttendanceList);
 
-        return "parent_student_courses_attendance";
+        return "parent_student_courses_attendance";  // Thymeleaf template name
     }
+
     @Autowired
     MessageRepository messageRepository;
 
