@@ -5,12 +5,12 @@
 </head>
 <body>
 
-<h2>Register Student to Class</h2>
+<h2>Register Instructor to Class</h2>
 
-<form action="#" th:action="@{/CourseAdminDashboard/registerStudentToClass/save}" th:object="${instructorCourseRegistrationDTO}" method="post">
+<form action="#" th:action="@{/CourseAdminDashboard/registerInstructorToClass/save}" th:object="${instructorCourseRegistrationDTO}" method="post">
     <div>
-        <label for="studentId">Student ID:</label>
-        <input type="number" id="studentId" th:field="*{studentId}" required />
+        <label for="instructorId">Instructor ID:</label>
+        <input type="number" id="instructorId" th:field="*{courseInstructorId}" required />
     </div>
 
     <div>

@@ -51,36 +51,28 @@ public class CourseController {
             @RequestParam(value = "page", defaultValue = "0") int currentPage,
             Model model) {
 
-        // Fetch the number of unique weeks (used for pagination)
         int totalWeeks = userService.getTotalWeeksForClass(classId);
 
-        // Ensure that currentWeek is within valid bounds
         if (currentWeek < 1 || currentWeek > totalWeeks) {
-            currentWeek = 1;  // Set default to week 1 if out of bounds
+            currentWeek = 1;
         }
 
-        // Fetch attendance records for the specific week and page
-        Page<Attendance> attendanceRecords = userService.getAttendanceByWeekAndPage(classId, currentWeek, currentPage, 50);
+        List<WeeklyAttendanceDTO> attendanceRecords = userService.getGroupedAttendance(classId, currentWeek);
 
-        // Fetch course details
         Course course = userService.getCourseById(classId);
-
-        // Fetch attendance percentages
         Map<String, Double> attendancePercentages = userService.getAttendancePercentages(classId);
 
-        // Add attributes to the model
         model.addAttribute("attendancePercentages", attendancePercentages);
-
-        // Add data to the model
         model.addAttribute("course", course);
         model.addAttribute("courseInstructorId", instructorId);
-        model.addAttribute("attendanceRecords", attendanceRecords.getContent());
+        model.addAttribute("attendanceRecords", attendanceRecords);
         model.addAttribute("currentWeek", currentWeek);
         model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", totalWeeks);  // Total weeks represent total pages
+        model.addAttribute("totalPages", totalWeeks);
 
         return "courses_attendance_instructor";
     }
+
 
 
 

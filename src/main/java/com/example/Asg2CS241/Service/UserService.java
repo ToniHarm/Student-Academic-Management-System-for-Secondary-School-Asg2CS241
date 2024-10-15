@@ -9,10 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -164,5 +161,40 @@ public class UserService {
         // Save the student back to the repository
         stuRepo.save(student);
     }
+
+    public void registerInstructorToClass(Long instructorId, Long classId) {
+        CourseInstructor instructor = courTeacherRepo.findById(instructorId).orElseThrow(() -> new RuntimeException("Teacher not found"));
+        Course course = courseRepository.findById(classId).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        // Add the course to the student's courses set
+        instructor.getCourses().add(course);
+
+        // Save the student back to the repository
+        courTeacherRepo.save(instructor);
+    }
+    public List<Attendance> getAttendanceByClassAndWeek(Long classId, int week) {
+        Pageable pageable = PageRequest.of(0, 1000);  // Example: Set a large page size if you don't need paging
+        Page<Attendance> attendancePage = attendanceRepository.findByCourse_ClassidAndWeek(classId, week, pageable);
+        return attendancePage.getContent();  // Return the list of attendance records
+    }
+
+    public List<WeeklyAttendanceDTO> getGroupedAttendance(Long classId, int week) {
+        List<Attendance> attendanceRecords = attendanceRepository.findByCourse_ClassidAndWeek(classId, week);
+
+        Map<Long, WeeklyAttendanceDTO> groupedAttendance = new HashMap<>();
+
+        for (Attendance record : attendanceRecords) {
+            Long studentId = record.getStudent().getStuid();
+            WeeklyAttendanceDTO dto = groupedAttendance.getOrDefault(studentId, new WeeklyAttendanceDTO());
+            dto.setStudentId(studentId);
+            dto.setStudentName(record.getStudent().getFname() + " " + record.getStudent().getLname());
+            dto.setWeek(week);
+            dto.getDailyAttendance().put(record.getDay_of_week(), record.getStatus());
+            groupedAttendance.put(studentId, dto);
+        }
+
+        return new ArrayList<>(groupedAttendance.values());
+    }
+
 
 }

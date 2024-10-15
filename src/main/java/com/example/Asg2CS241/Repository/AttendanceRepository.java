@@ -34,6 +34,8 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     // Fetch attendance for a specific class and week, with pagination
     Page<Attendance> findByCourse_ClassidAndWeek(Long classId, int week, Pageable pageable);
 
+    List<Attendance> findByCourse_ClassidAndWeek(Long classId, int week);
+
     // Count distinct number of weeks for a given class
     @Query("SELECT COUNT(DISTINCT a.week) FROM Attendance a WHERE a.course.classid = :classId")
     int countDistinctWeeksByClassId(@Param("classId") Long classId);
