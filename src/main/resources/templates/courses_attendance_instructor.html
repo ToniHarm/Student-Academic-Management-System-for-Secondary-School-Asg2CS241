@@ -9,41 +9,50 @@
 
 <h2>Attendance Records</h2>
 
-<!-- Add Attendance Link -->
-<a class="btn btn-primary" th:href="@{/CourseInstructorDashboard/{courseInstructorId}/attendance/{classid}/setAttendance(courseInstructorId=${courseInstructorId}, classid=${classid})}">
-    Add Attendance
-</a>
+<table>
+    <tr>
+        <td>Present:</td>
+        <td th:text="${attendancePercentages['presentPercentage']} + '%'"></td>
+    </tr>
+    <tr>
+        <td>Late:</td>
+        <td th:text="${attendancePercentages['latePercentage']} + '%'"></td>
+    </tr>
+    <tr>
+        <td>Absent:</td>
+        <td th:text="${attendancePercentages['absentPercentage']} + '%'"></td>
+    </tr>
+</table>
+<a class="btn btn-primary" th:href="@{'/CourseInstructorDashboard/'+ ${courseInstructorId} + '/attendance/' +  ${classid} + '/setAttendance'}">Add Attendance</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Week</th>
+        <th>Student ID</th>
+        <th>Student Name</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="record : ${attendanceRecords}">
+        <td th:text="${record.week}"></td>
+        <td th:text="${record.studentId}"></td>
+        <td th:text="${record.studentName}"></td>
+        <td th:text="${record.dailyAttendance['Monday']}"></td>
+        <td th:text="${record.dailyAttendance['Tuesday']}"></td>
+        <td th:text="${record.dailyAttendance['Wednesday']}"></td>
+        <td th:text="${record.dailyAttendance['Thursday']}"></td>
+        <td th:text="${record.dailyAttendance['Friday']}"></td>
+    </tr>
+    </tbody>
+</table>
 
-<!-- Main Attendance Table -->
-<div th:if="${attendanceRecords != null}">
-    <h3>All Attendance Records</h3>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>Week</th>
-            <th>Student ID</th>
-            <th>Student Name</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="record : ${attendanceRecords}">
-            <th th:text="${record.week}"></th>
-            <td th:text="${record.student.stuid}"></td>
-            <td th:text="${record.student.fname + ' ' + record.student.lname}"></td>
-            <td th:text="${record.day_of_week == 'Monday' ? record.status : ''}"></td>
-            <td th:text="${record.day_of_week == 'Tuesday' ? record.status : ''}"></td>
-            <td th:text="${record.day_of_week == 'Wednesday' ? record.status : ''}"></td>
-            <td th:text="${record.day_of_week == 'Thursday' ? record.status : ''}"></td>
-            <td th:text="${record.day_of_week == 'Friday' ? record.status : ''}"></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+
+
 
 <!-- Pagination for Weeks -->
 <div th:if="${totalPages > 1}">
@@ -60,74 +69,6 @@
     </span>
 </div>
 
-<!-- Search Form -->
-<form method="get" th:action="@{/CourseInstructorDashboard/{courseInstructorId}/attendance/search(courseInstructorId=${courseInstructorId})}">
-    <label for="studentId">Student ID:</label>
-    <input type="text" id="studentId" name="studentId" placeholder="Enter Student ID" required>
-
-    <label for="week">Week:</label>
-    <input type="number" id="week" name="week" placeholder="Enter Week Number" min="1" required>
-
-    <label for="dayOfWeek">Select Day of the Week:</label>
-    <select id="dayOfWeek" name="dayOfWeek" required>
-        <option value="">--Select Day--</option>
-        <option value="Monday">Monday</option>
-        <option value="Tuesday">Tuesday</option>
-        <option value="Wednesday">Wednesday</option>
-        <option value="Thursday">Thursday</option>
-        <option value="Friday">Friday</option>
-    </select>
-
-    <button type="submit">Search</button>
-</form>
-
-
-
-<!-- Searched Attendance Record Section -->
-<div th:if="${searchedAttendanceRecord != null}">
-    <h3>Editing Attendance for Student: <span th:text="${searchedAttendanceRecord.student.fname + ' ' + searchedAttendanceRecord.student.lname}"></span></h3>
-
-    <!-- Display the searched attendance record in a separate table -->
-    <table border="1">
-        <thead>
-        <tr>
-            <th>Week</th>
-            <th>Student ID</th>
-            <th>Day</th>
-            <th>Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td th:text="${searchedAttendanceRecord.week}"></td>
-            <td th:text="${searchedAttendanceRecord.student.stuid}"></td>
-            <td th:text="${searchedAttendanceRecord.day_of_week}"></td>
-            <td>
-                <form th:action="@{/CourseInstructorDashboard/{courseInstructorId}/attendance/edit(courseInstructorId=${courseInstructorId})}" method="post">
-                    <input type="hidden" name="studentId" th:value="${searchedAttendanceRecord.student.stuid}">
-                    <input type="hidden" name="week" th:value="${searchedAttendanceRecord.week}">
-                    <input type="hidden" name="dayOfWeek" th:value="${searchedAttendanceRecord.day_of_week}">
-                    <input type="text" name="status" th:value="${searchedAttendanceRecord.status}">
-                    <button type="submit">Update</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <!-- Delete button for the searched record -->
-    <form th:action="@{/CourseInstructorDashboard/{courseInstructorId}/attendance/delete(courseInstructorId=${courseInstructorId})}" method="post">
-        <input type="hidden" name="studentId" th:value="${searchedAttendanceRecord.student.stuid}">
-        <input type="hidden" name="week" th:value="${searchedAttendanceRecord.week}">
-        <input type="hidden" name="dayOfWeek" th:value="${searchedAttendanceRecord.day_of_week}">
-        <button type="submit">Delete Attendance Record</button>
-    </form>
-</div>
-
-<!-- Error Message Display -->
-<div th:if="${error}">
-    <p th:text="${error}"></p>
-</div>
 
 </body>
 </html>

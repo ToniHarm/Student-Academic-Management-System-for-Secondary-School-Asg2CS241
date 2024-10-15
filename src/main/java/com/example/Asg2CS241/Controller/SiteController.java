@@ -1,11 +1,10 @@
 package com.example.Asg2CS241.Controller;
 
-import com.example.Asg2CS241.Entity.CourseAdmin;
-import com.example.Asg2CS241.Entity.CourseInstructor;
-import com.example.Asg2CS241.Entity.Parent;
-import com.example.Asg2CS241.Entity.Student;
+import com.example.Asg2CS241.Entity.*;
 import com.example.Asg2CS241.Repository.StudentRepository;
+import com.example.Asg2CS241.Security.CustomCourseAdminDetails;
 import com.example.Asg2CS241.Security.CustomCourseInstructorDetails;
+import com.example.Asg2CS241.Security.CustomParentDetails;
 import com.example.Asg2CS241.Security.CustomStudentDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -17,11 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import com.example.Asg2CS241.Service.UserService;
 
 import java.util.Optional;
+import java.util.Set;
 
 
 @Controller
 public class SiteController {
-
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/")
     public String restingPage() {
@@ -62,25 +63,25 @@ public class SiteController {
 
 
 
-    @GetMapping("/register-student")
+    @GetMapping("/CourseAdminDashboard/register-student")
     public String showRegisterStudent(Model model) {
         model.addAttribute("Student", new Student());
         return "RegisterStudent";  // This returns the 'register.html' template
     }
 
-    @GetMapping("/register-parent")
+    @GetMapping("/CourseAdminDashboard/register-parent")
     public String showRegisterParent(Model model) {
         model.addAttribute("Parent", new Parent());
         return "RegisterParent";  // This returns the 'register.html' template
     }
 
-    @GetMapping("/register-admin")
+    @GetMapping("/CourseAdminDashboard/register-admin")
     public String showRegisterAdmin(Model model) {
         model.addAttribute("CourseAdmin", new CourseAdmin());
         return "RegisterAdmin";  // This returns the 'register.html' template
     }
 
-    @GetMapping("/register-instructor")
+    @GetMapping("/CourseAdminDashboard/register-instructor")
     public String showRegisterInstructor(Model model) {
         model.addAttribute("CourseInstructor", new CourseInstructor());
         return "RegisterInstructor";  // This returns the 'register.html' template
@@ -105,7 +106,19 @@ public class SiteController {
     }
 
     @GetMapping("/CourseAdminDashboard")
-    public String showAdminDashboard() {
+    public String showAdminDashboard(Model model) {
+
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomCourseAdminDetails userDetails = (CustomCourseAdminDetails) authentication.getPrincipal();
+
+        // Fetch the student entity using the student ID from the user details
+        Long courseadminId = userDetails.getId();  // Assuming CustomStudentDetails has getId()
+
+        // Add the studentId to the model so it can be accessed in the view
+        model.addAttribute("courseAdminId", courseadminId);
+
+
         return "CourseAdminDashboard";  // Return the admin dashboard view
     }
 
@@ -125,9 +138,68 @@ public class SiteController {
     }
 
     @GetMapping("/ParentDashboard")
-    public String showParentDashboard() {
+    public String showParentDashboard(Model model) {
+
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomParentDetails userDetails = (CustomParentDetails) authentication.getPrincipal();
+
+        // Fetch the student entity using the student ID from the user details
+        Long parentId = userDetails.getId();  // Assuming CustomStudentDetails has getId()
+
+
+        // Fetch all students linked to the parent
+        Set<Student> students = userService.getStudentsByParentId(parentId);
+        model.addAttribute("students", students);
+        model.addAttribute("parentId", parentId);
+
+
+
+        // Add the studentId to the model so it can be accessed in the view
+        model.addAttribute("parentId", parentId);
+
+
+
+
+
         return "ParentDashboard";  // Return the student dashboard view
     }
+
+    @Autowired
+    private UserService courseRepo;
+
+    @GetMapping("/CourseAdminDashboard/register-course")
+    public String showCourseCreatePage(Model model){
+        model.addAttribute("Course", new Course());
+        return "create_course";
+    }
+
+    @RequestMapping(value = "/save-course", method = RequestMethod.POST)
+    public String saveCourse(@ModelAttribute("Course") Course course) {
+
+        courseRepo.save(course);
+
+        return "redirect:/CourseAdminDashboard";
+    }
+
+    @GetMapping("/CourseAdminDashboard/registerStudentToClass")
+    public String showRegistrationForm(Model model) {
+        // Add the DTO object to the model
+        model.addAttribute("studentCourseRegistrationDTO", new StudentCourseRegistrationDTO());
+        return "RegisterStudentToCourse";
+    }
+
+    @PostMapping("/CourseAdminDashboard/registerStudentToClass/save")
+    public String registerStudentToClass(@ModelAttribute StudentCourseRegistrationDTO registrationDTO, Model model) {
+        Long studentId = registrationDTO.getStudentId();
+        Long classId = registrationDTO.getClassId();
+
+        // Add the student to the class via UserService
+        userService.registerStudentToClass(studentId, classId);
+
+        return "redirect:/CourseAdminDashboard";  // Redirect to a success or confirmation page
+    }
+
 
 
 

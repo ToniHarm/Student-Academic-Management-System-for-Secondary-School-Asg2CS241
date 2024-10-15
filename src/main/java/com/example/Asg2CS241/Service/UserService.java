@@ -106,7 +106,6 @@ public class UserService {
         }
     }
 
-
     public List<Attendance> getAttendanceByClassId(Long classId) {
         return attendanceRepository.findByCourse_Classid(classId);
     }
@@ -136,4 +135,73 @@ public class UserService {
     public List<Attendance> getStudentAttendanceForCourse(Long studentId, Long classId) {
         return attendanceRepository.findByStudentIdAndClassId(studentId, classId);
     }
+
+    public Set<Student> getStudentsByParentId(Long parentId) {
+        return parRepo.findStudentsByParentId(parentId);
+    }
+
+    public Map<String, Double> getAttendancePercentages(Long courseId) {
+        return attendanceRepository.findAttendancePercentagesByCourseId(courseId);
+    }
+
+
+    @Autowired
+    private MessageRepository messageRepository;
+
+    public void sendMessageToParent(Parent parent, String messageContent, String date) {
+        Message message = new Message(parent, messageContent, date);
+        messageRepository.save(message);
+    }
+
+    public Student getStudentById(Long studentId) {
+        return stuRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
+    }
+
+    public void registerStudentToClass(Long studentId, Long classId) {
+        Student student = stuRepo.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
+        Course course = courseRepository.findById(classId).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        // Add the course to the student's courses set
+        student.getCourses().add(course);
+
+        // Save the student back to the repository
+        stuRepo.save(student);
+    }
+
+    public void registerInstructorToClass(Long instructorId, Long classId) {
+        CourseInstructor instructor = courTeacherRepo.findById(instructorId).orElseThrow(() -> new RuntimeException("Teacher not found"));
+        Course course = courseRepository.findById(classId).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        // Add the course to the student's courses set
+        instructor.getCourses().add(course);
+
+        // Save the student back to the repository
+        courTeacherRepo.save(instructor);
+    }
+    public List<Attendance> getAttendanceByClassAndWeek(Long classId, int week) {
+        Pageable pageable = PageRequest.of(0, 1000);  // Example: Set a large page size if you don't need paging
+        Page<Attendance> attendancePage = attendanceRepository.findByCourse_ClassidAndWeek(classId, week, pageable);
+        return attendancePage.getContent();  // Return the list of attendance records
+    }
+
+    public List<WeeklyAttendanceDTO> getGroupedAttendance(Long classId, int week) {
+        List<Attendance> attendanceRecords = attendanceRepository.findByCourse_ClassidAndWeek(classId, week);
+
+        Map<Long, WeeklyAttendanceDTO> groupedAttendance = new HashMap<>();
+
+        for (Attendance record : attendanceRecords) {
+            Long studentId = record.getStudent().getStuid();
+            WeeklyAttendanceDTO dto = groupedAttendance.getOrDefault(studentId, new WeeklyAttendanceDTO());
+            dto.setStudentId(studentId);
+            dto.setStudentName(record.getStudent().getFname() + " " + record.getStudent().getLname());
+            dto.setWeek(week);
+            dto.getDailyAttendance().put(record.getDay_of_week(), record.getStatus());
+            groupedAttendance.put(studentId, dto);
+        }
+
+        return new ArrayList<>(groupedAttendance.values());
+    }
+
+
 }
