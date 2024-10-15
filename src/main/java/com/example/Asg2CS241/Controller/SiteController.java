@@ -200,6 +200,24 @@ public class SiteController {
         return "redirect:/CourseAdminDashboard";  // Redirect to a success or confirmation page
     }
 
+    @GetMapping("/CourseAdminDashboard/registerInstructorToClass")
+    public String showRegistrationFormInstructor(Model model) {
+        // Add the DTO object to the model
+        model.addAttribute("instructorCourseRegistrationDTO", new InstructorCourseRegistrationDTO());
+        return "RegisterInstructorToCourse";
+    }
+
+    @PostMapping("/CourseAdminDashboard/registerInstructorToClass/save")
+    public String registerInstructorToClass(@ModelAttribute InstructorCourseRegistrationDTO registrationDTO, Model model) {
+        Long instructorId = registrationDTO.getCourseInstructorId();
+        Long classId = registrationDTO.getClassId();
+
+        // Add the student to the class via UserService
+        userService.registerInstructorToClass(instructorId, classId);
+
+        return "redirect:/CourseAdminDashboard";  // Redirect to a success or confirmation page
+    }
+
 
 
 
