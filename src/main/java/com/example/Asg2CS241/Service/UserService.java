@@ -106,6 +106,7 @@ public class UserService {
         }
     }
 
+
     public List<Attendance> getAttendanceByClassId(Long classId) {
         return attendanceRepository.findByCourse_Classid(classId);
     }
