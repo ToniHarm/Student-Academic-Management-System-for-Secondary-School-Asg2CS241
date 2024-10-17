@@ -1,27 +1,173 @@
+<!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
-<head >
+<head>
     <title>Please Login</title>
+    <style>
+        /* Google Fonts Import */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url('https://source.unsplash.com/1600x900/?nature,abstract');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            background-blend-mode: darken;
+        }
+
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        legend {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            transition: border 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 91, 187, 0.4);
+        }
+
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .login-container p {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        .login-container a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+
+        /* Smooth transitions for form inputs and buttons */
+        input,
+        .btn {
+            transition: all 0.3s ease;
+        }
+    </style>
 </head>
-<body >
-<div >
+<body>
+<div class="login-container">
     <form name="f" th:action="@{/login-student}" method="post">
         <fieldset>
             <legend>Please Login</legend>
+
             <div th:if="${param.error}" class="alert alert-error">
                 Invalid username and password.
             </div>
+
             <div th:if="${param.logout}" class="alert alert-success">
                 You have been logged out.
             </div>
+
             <label for="email">Username</label>
-            <input type="text" id="email" name="email"/>
+            <input type="text" id="email" name="email" placeholder="Enter your username" required/>
+
             <label for="password">Password</label>
-            <input type="password" id="password" name="password"/>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required/>
+
             <div class="form-actions">
                 <button type="submit" class="btn">Log in</button>
             </div>
         </fieldset>
     </form>
+
+    <p>Don't have an account? <a href="/register">Register here</a></p>
 </div>
 </body>
 </html>
