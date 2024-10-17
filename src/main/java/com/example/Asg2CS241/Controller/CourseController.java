@@ -1,11 +1,8 @@
 package com.example.Asg2CS241.Controller;
 
-import com.example.Asg2CS241.Entity.Attendance;
-import com.example.Asg2CS241.Entity.Course;
+import com.example.Asg2CS241.Entity.*;
 
-import com.example.Asg2CS241.Entity.CourseInstructor;
-import com.example.Asg2CS241.Entity.Student;
-import com.example.Asg2CS241.Service.AttendanceService;
+import com.example.Asg2CS241.Repository.MessageRepository;
 import com.example.Asg2CS241.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,15 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
+
 @Controller
 public class CourseController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private AttendanceService attendanceService;
 
     // Endpoint for Student to view their courses
     @GetMapping("/StudentDashboard/{stuid}")
@@ -55,30 +50,29 @@ public class CourseController {
             @RequestParam(value = "page", defaultValue = "0") int currentPage,
             Model model) {
 
-        // Fetch the number of unique weeks (used for pagination)
         int totalWeeks = userService.getTotalWeeksForClass(classId);
 
-        // Ensure that currentWeek is within valid bounds
         if (currentWeek < 1 || currentWeek > totalWeeks) {
-            currentWeek = 1;  // Set default to week 1 if out of bounds
+            currentWeek = 1;
         }
 
-        // Fetch attendance records for the specific week and page
-        Page<Attendance> attendanceRecords = userService.getAttendanceByWeekAndPage(classId, currentWeek, currentPage, 50);
+        List<WeeklyAttendanceDTO> attendanceRecords = userService.getGroupedAttendance(classId, currentWeek);
 
-        // Fetch course details
         Course course = userService.getCourseById(classId);
+        Map<String, Double> attendancePercentages = userService.getAttendancePercentages(classId);
 
-        // Add data to the model
+        model.addAttribute("attendancePercentages", attendancePercentages);
         model.addAttribute("course", course);
         model.addAttribute("courseInstructorId", instructorId);
-        model.addAttribute("attendanceRecords", attendanceRecords.getContent());
+        model.addAttribute("attendanceRecords", attendanceRecords);
         model.addAttribute("currentWeek", currentWeek);
         model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", totalWeeks);  // Total weeks represent total pages
+        model.addAttribute("totalPages", totalWeeks);
 
         return "courses_attendance_instructor";
     }
+
+
 
 
     @RequestMapping("/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}/setAttendance")
@@ -95,6 +89,7 @@ public class CourseController {
         Attendance attendance = new Attendance();
 
 
+
         // Add attributes to the model
         model.addAttribute("attendance", attendance);
         model.addAttribute("course", course);
@@ -105,21 +100,53 @@ public class CourseController {
     }
 
 
+
+
+
     @PostMapping("/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}/save")
     public String saveAttendance(@PathVariable("classid") Long classId,
                                  @RequestParam("studentId") Long studentId,
                                  @RequestParam("week") int week,
                                  @RequestParam("dayOfWeek") String dayOfWeek,
                                  @RequestParam("status") String status,
-                                 @PathVariable("courseinstructorid") Long courseInstructorId, // Assuming instructor ID is passed
+                                 @PathVariable("courseinstructorid") Long courseInstructorId,
                                  Model model) {
-        Course course = userService.getCourseById(classId);
-        model.addAttribute("course", course);
-        userService.saveAttendance(studentId, classId, week, dayOfWeek, status);
 
-        // Correct redirect with properly resolved variables
-        return "redirect:/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}";
+        try {
+            // Fetch course and student
+            Course course = userService.getCourseById(classId);
+            Student student = userService.getStudentById(studentId);
+            Parent parent = student.getParent();  // Get the parent of the student
+
+            // Add course to model
+            model.addAttribute("course", course);
+
+            // Save attendance and get the result message
+            String resultMessage = userService.saveAttendance(studentId, classId, week, dayOfWeek, status);
+            model.addAttribute("message", resultMessage);
+
+            // If the student is marked absent, notify the parent
+            if (status.equalsIgnoreCase("absent")) {
+                String messageContent = "Your child, " + student.getFname() + " " + student.getLname() +
+                        " (ID: " + student.getStuid() + "), was marked absent from the course " +
+                        course.getClassname() + " (Class ID: " + classId + ") on " + dayOfWeek +
+                        " during Week " + week + ".";
+                String currentDate = LocalDate.now().toString();
+
+                // Save the message to the parent's inbox
+                userService.sendMessageToParent(parent, messageContent, currentDate);
+            }
+
+            // Redirect back to attendance page
+            return "redirect:/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}";
+
+        } catch (Exception e) {
+            // Handle any unexpected exceptions
+            model.addAttribute("message", "An error occurred while saving attendance: Student Attendance already exist");
+            return "save_attendance";  // Redirect to an error page or show the error in the same form
+        }
     }
+
 
     @GetMapping("/StudentDashboard/{stuid}/attendance/{classid}")
     public String getStudentAttendance(
@@ -133,21 +160,92 @@ public class CourseController {
         // Fetch all attendance records for the student in the given class
         List<Attendance> attendanceRecords = userService.getStudentAttendanceForCourse(studentId, classId);
 
+        // Create a map to store weekly attendance records
+        Map<Integer, WeeklyAttendanceDTO> weeklyAttendanceMap = new HashMap<>();
+
+        for (Attendance record : attendanceRecords) {
+            int week = record.getWeek();
+            WeeklyAttendanceDTO dto = weeklyAttendanceMap.getOrDefault(week, new WeeklyAttendanceDTO());
+
+            dto.setWeek(week);
+            dto.setStudentName(record.getStudent().getFname() + " " + record.getStudent().getLname());
+            dto.getDailyAttendance().put(record.getDay_of_week(), record.getStatus());
+
+            weeklyAttendanceMap.put(week, dto);
+        }
+
+        // Convert the map to a list of WeeklyAttendanceDTO
+        List<WeeklyAttendanceDTO> weeklyAttendanceList = new ArrayList<>(weeklyAttendanceMap.values());
+
         // Add attributes to the model
         model.addAttribute("course", course);
         model.addAttribute("studentId", studentId);
-        model.addAttribute("attendanceRecords", attendanceRecords);
+        model.addAttribute("weeklyAttendanceList", weeklyAttendanceList);
 
         return "courses_attendance_student";  // Thymeleaf template name
     }
 
-    @GetMapping("/parentDashboard/{parentid}")
-    public String getstudentForParent(@PathVariable("parentid") Long parentId, Model model) {
 
+    @GetMapping("/ParentDashboard/{parentid}/studentCourses/{stuid}")
+    public String getstudentCourseForParent(@PathVariable("parentid") Long parentId,
+                                            @PathVariable("stuid") Long studentId,
+                                            Model model) {
 
+        Set<Course> courses = userService.getCoursesForStudent(studentId);
+        Student student = userService.findByStuid(studentId); // Fetch the student entity
+
+        model.addAttribute("listCourses", courses);
         model.addAttribute("parentId", parentId);
+        model.addAttribute("studentId", studentId);
+        model.addAttribute("student", student); // Add the student to the model
 
-        return null;
+        return "parent_student_courses";
+    }
+
+    @GetMapping("/ParentDashboard/{parentid}/studentCourses/{stuid}/attendance/{classid}")
+    public String getStudentCourseAttendanceForParent(
+            @PathVariable("stuid") Long studentId,
+            @PathVariable("classid") Long classId,
+            @PathVariable("parentid") Long parentId,
+            Model model) {
+
+        // Fetch all attendance records for the student in the given class
+        List<Attendance> attendanceRecords = userService.getStudentAttendanceForCourse(studentId, classId);
+
+        // Create a map to store weekly attendance records
+        Map<Integer, WeeklyAttendanceDTO> weeklyAttendanceMap = new HashMap<>();
+
+        for (Attendance record : attendanceRecords) {
+            int week = record.getWeek();
+            WeeklyAttendanceDTO dto = weeklyAttendanceMap.getOrDefault(week, new WeeklyAttendanceDTO());
+
+            dto.setWeek(week);
+            dto.setStudentName(record.getStudent().getFname() + " " + record.getStudent().getLname());
+            dto.getDailyAttendance().put(record.getDay_of_week(), record.getStatus());
+
+            weeklyAttendanceMap.put(week, dto);
+        }
+
+        // Convert the map to a list of WeeklyAttendanceDTO
+        List<WeeklyAttendanceDTO> weeklyAttendanceList = new ArrayList<>(weeklyAttendanceMap.values());
+
+        // Add attributes to the model
+        model.addAttribute("studentId", studentId);
+        model.addAttribute("classId", classId);
+        model.addAttribute("parentId", parentId);
+        model.addAttribute("weeklyAttendanceList", weeklyAttendanceList);
+
+        return "parent_student_courses_attendance";  // Thymeleaf template name
+    }
+
+    @Autowired
+    MessageRepository messageRepository;
+
+    @GetMapping("/ParentDashboard/{parentId}/messages")
+    public String getParentMessages(@PathVariable("parentId") Long parentId, Model model) {
+        List<Message> messages = messageRepository.findByParent_Parentid(parentId);
+        model.addAttribute("messages", messages);
+        return "parents_message";  // Thymeleaf template for displaying messages
     }
 
     // Search attendance
@@ -217,9 +315,6 @@ public class CourseController {
             return "courses_attendance_instructor"; // Return with error
         }
     }
-
-
-
 
 
 
