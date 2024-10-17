@@ -2,14 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Instructor Dashboard</title>
-</head>
-<body>
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Logout</button>
-</form>
-    <h1>Course Instructor Dashboard</h1>
-    <a class="btn btn-primary" th:href="@{'/CourseInstructorDashboard/' + ${courseInstructorId}}">Courses</a>
 
+    <link rel="stylesheet" href="/css/bootstrap.css"> <!-- Bootstrap CSS -->
+</head>
+
+<body>
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="/images/logo.jpg" alt="Admin Logo" width="50" height="50">
+            Course Instructor Dashboard
+        </a>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-3 text-center">
+            <img src="/images/teaching.png" alt="Instructor Profile Picture" class="profile-img" width="150" height="150">
+            <h3>Welcome Course Instructor!</h3>
+        </div>
+    </div>
+        <!-- Buttons -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-4 text-center">
+                <a class="btn btn-primary mb-3" th:href="@{'/CourseInstructorDashboard/' + ${courseInstructorId}}"> View Assigned Courses </a>
+
+            </div>
+        </div>
+    </div>
+
+
+<script src="/js/bootstrap.bundle.js"></script> <!-- Bootstrap JS -->
 </body>
 </html>
