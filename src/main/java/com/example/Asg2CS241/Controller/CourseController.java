@@ -111,28 +111,42 @@ public class CourseController {
                                  @RequestParam("status") String status,
                                  @PathVariable("courseinstructorid") Long courseInstructorId,
                                  Model model) {
-        Course course = userService.getCourseById(classId);
-        Student student = userService.getStudentById(studentId);
-        Parent parent = student.getParent();  // Get the parent of the student
-        model.addAttribute("course", course);
 
-        userService.saveAttendance(studentId, classId, week, dayOfWeek, status);
+        try {
+            // Fetch course and student
+            Course course = userService.getCourseById(classId);
+            Student student = userService.getStudentById(studentId);
+            Parent parent = student.getParent();  // Get the parent of the student
 
-        // If student is marked absent, send a message to the parent
-        if (status.equalsIgnoreCase("absent")) {
-            String messageContent = "Your child, " + student.getFname() + " " + student.getLname() +
-                    " (ID: " + student.getStuid() + "), was marked absent from the course " +
-                    course.getClassname() + " (Class ID: " + classId + ") on " + dayOfWeek +
-                    " during Week " + week + ".";
-            String currentDate = LocalDate.now().toString();  // Current date as a string
+            // Add course to model
+            model.addAttribute("course", course);
 
-            // Save the message to the parent’s inbox
-            userService.sendMessageToParent(parent, messageContent, currentDate);
+            // Save attendance and get the result message
+            String resultMessage = userService.saveAttendance(studentId, classId, week, dayOfWeek, status);
+            model.addAttribute("message", resultMessage);
+
+            // If the student is marked absent, notify the parent
+            if (status.equalsIgnoreCase("absent")) {
+                String messageContent = "Your child, " + student.getFname() + " " + student.getLname() +
+                        " (ID: " + student.getStuid() + "), was marked absent from the course " +
+                        course.getClassname() + " (Class ID: " + classId + ") on " + dayOfWeek +
+                        " during Week " + week + ".";
+                String currentDate = LocalDate.now().toString();
+
+                // Save the message to the parent's inbox
+                userService.sendMessageToParent(parent, messageContent, currentDate);
+            }
+
+            // Redirect back to attendance page
+            return "redirect:/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}";
+
+        } catch (Exception e) {
+            // Handle any unexpected exceptions
+            model.addAttribute("message", "An error occurred while saving attendance: Student Attendance already exist");
+            return "save_attendance";  // Redirect to an error page or show the error in the same form
         }
-
-        // Redirect back to attendance page
-        return "redirect:/CourseInstructorDashboard/{courseinstructorid}/attendance/{classid}";
     }
+
 
 
     @GetMapping("/StudentDashboard/{stuid}/attendance/{classid}")

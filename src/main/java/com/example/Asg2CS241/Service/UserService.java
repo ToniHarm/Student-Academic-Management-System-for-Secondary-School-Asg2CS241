@@ -3,11 +3,13 @@ package com.example.Asg2CS241.Service;
 import com.example.Asg2CS241.Entity.*;
 import com.example.Asg2CS241.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.*;
 
@@ -77,27 +79,38 @@ public class UserService {
     @Autowired
     private ClassRepository courseRepository;
     // Save an attendance record
-    public void saveAttendance(Long studentId, Long courseId, int week, String dayOfWeek, String status) {
-        Student student = stuRepo.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
 
 
-//        Optional<Attendance> existingAttendance = attendanceRepository.findByStudentAndweekAndday_of_week(studentId, week, dayOfWeek);
-//        if (existingAttendance.isPresent()) {
-//            throw new RuntimeException("Attendance record already exists for this student for the specified week and day.");
-//        }
+    @Transactional  // Make sure the method is correctly annotated
+    public String saveAttendance(Long studentId, Long courseId, int week, String dayOfWeek, String status) {
+        try {
+            // Find student and course
+            Student student = stuRepo.findById(studentId)
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
+            Course course = courseRepository.findById(courseId)
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
 
-        Attendance attendance = new Attendance();
-        attendance.setStudent(student);
-        attendance.setCourse(course);
-        attendance.setWeek(week);
-        attendance.setDay_of_week(dayOfWeek);
-        attendance.setStatus(status);
+            // Create new attendance record
+            Attendance attendance = new Attendance();
+            attendance.setStudent(student);
+            attendance.setCourse(course);
+            attendance.setWeek(week);
+            attendance.setDay_of_week(dayOfWeek);
+            attendance.setStatus(status);
 
-        attendanceRepository.save(attendance);
+            // Save attendance record
+            attendanceRepository.save(attendance);
+            return "Attendance saved successfully";
+        } catch (DataIntegrityViolationException e) {
+            // Catch duplicate entry exception
+            return "Attendance record already exists for this student on " + dayOfWeek + " of week " + week;
+        } catch (Exception e) {
+            // Catch any other unexpected exceptions
+            e.printStackTrace();
+            return "An unexpected error occurred while saving attendance: " + e.getMessage();
+        }
     }
+
 
     public List<Attendance> getAttendanceByClassId(Long classId) {
         return attendanceRepository.findByCourse_Classid(classId);
