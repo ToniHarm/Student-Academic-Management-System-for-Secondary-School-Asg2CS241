@@ -2,15 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
+
+    <!-- Link to Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.css">
+
 </head>
 <body>
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Logout</button>
-    </form>
-    <h1>Student Dashboard</h1>
-    <a class="btn btn-primary" th:href="@{'/StudentDashboard/' + ${studentId}}">Courses</a>
 
+<!-- Navigation bar with logo and logout button -->
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Logo on the left side -->
+        <a class="navbar-brand" href="#">
+            <img src="/images/logo.jpg" alt=" student Logo" width="50" height="50"> <!-- Update with the correct path for your logo -->
+            Student Dashboard
+        </a>
 
+        <!-- Logout button on the right -->
+        <form th:action="@{/logout}" method="post" class="d-flex">
+            <button class="btn btn-danger" type="submit">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<!-- Main content -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-3 text-center">
+            <!-- Profile picture (student's photo) -->
+            <img src="/images/student.png" alt="Student Profile Picture" class="rounded-circle" width="150" height="150">
+            <h3 class="mt-3">Welcome, Student!</h3> <!-- You can dynamically insert the student's name here -->
+        </div>
+    </div>
+
+    <!-- Dashboard options -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-4 text-center">
+            <a class="btn btn-primary btn-lg" th:href="@{'/StudentDashboard/' + ${studentId}}">View Courses</a>
+        </div>
+    </div>
+</div>
+
+<!-- Link to Bootstrap JS -->
+<script src="/js/bootstrap.bundle.js"></script>
 </body>
 </html>
