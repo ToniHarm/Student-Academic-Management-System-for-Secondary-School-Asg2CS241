@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Save Student Attendance</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
+<<<<<<< HEAD
 <form th:action="@{/logout}" method="post">
     <button type="submit">Logout</button>
 </form>
@@ -17,34 +21,105 @@
                 th:value="${student.stuid}"
                 th:text="${student.fname + ' ' + student.lname}"></option>
     </select>
+=======
+>>>>>>> origin/gwen-branch
 
-    <label for="week">Select Week:</label>
-    <select name="week" id="week">
-        <option th:each="week : ${#numbers.sequence(1, 14)}"
-                th:value="${week}"
-                th:text="'Week ' + ${week}"></option>
-    </select>
+<!-- Navigation bar with logo, back button, and logout button -->
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Logo on the left side -->
+        <a class="navbar-brand" href="#">
+            <img src="/images/logo.jpg" alt="Student Logo" width="50" height="50">
+            Save Student Attendance
+        </a>
 
-    <label for="dayOfWeek">Select Day:</label>
-    <select name="dayOfWeek" id="dayOfWeek">
-        <option value="Monday">Monday</option>
-        <option value="Tuesday">Tuesday</option>
-        <option value="Wednesday">Wednesday</option>
-        <option value="Thursday">Thursday</option>
-        <option value="Friday">Friday</option>
-    </select>
+        <!-- Logout button on the right -->
+        <form th:action="@{/logout}" method="post" class="d-flex">
+            <button class="btn btn-danger" type="submit">Logout</button>
+        </form>
+    </div>
 
-    <label>Attendance Status:</label>
-    <input type="radio" name="status" value="present"> Present
-    <input type="radio" name="status" value="absent"> Absent
-    <input type="radio" name="status" value="late"> Late
+    <div class="ms-auto" style="position: relative">
+        <button class="btn btn-light" type="button" onclick="window.history.back();">
+            <i class="bi bi-arrow-left"> Go back</i>
+        </button>
+    </div>
+</nav>
 
+<!-- Main container for the form -->
+<div class="container mt-4" style="max-width: 600px;">
+    <h1 class="text-center mb-4">Save Student Attendance</h1>
+    <div class="bg-light p-4 rounded shadow-sm">
+        <form method="POST" th:action="@{'/CourseInstructorDashboard/'+ ${courseInstructorId}+'/attendance/' + ${classid} + '/save'}" th:object="${attendance}">
+            <!-- Student Selection -->
+            <div class="form-group">
+                <label for="student">Select Student:</label>
+                <select class="form-control" name="studentId" id="student" required>
+                    <option value="" disabled selected>Select a student</option>
+                    <option th:each="student : ${students}"
+                            th:value="${student.stuid}"
+                            th:text="${student.fname + ' ' + student.lname}"></option>
+                </select>
+            </div>
 
+            <!-- Week Selection -->
+            <div class="form-group">
+                <label for="week">Select Week:</label>
+                <select class="form-control" name="week" id="week" required>
+                    <option th:each="week : ${#numbers.sequence(1, 14)}"
+                            th:value="${week}"
+                            th:text="'Week ' + ${week}"></option>
+                </select>
+            </div>
 
+<<<<<<< HEAD
     <button type="submit">Submit Attendance</button>
 
 </form>
 
 <p th:if="${message}" th:text="${message}" style="color: red;"></p>
+=======
+            <!-- Day of the Week Selection -->
+            <div class="form-group">
+                <label for="dayOfWeek">Select Day:</label>
+                <select class="form-control" name="dayOfWeek" id="dayOfWeek" required>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                </select>
+            </div>
+
+            <!-- Attendance Status -->
+            <div class="form-group">
+                <label>Attendance Status:</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="status" value="present" id="present" required>
+                    <label class="form-check-label" for="present">Present</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="status" value="absent" id="absent" required>
+                    <label class="form-check-label" for="absent">Absent</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="status" value="late" id="late" required>
+                    <label class="form-check-label" for="late">Late</label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit Attendance</button>
+            </div>
+        </form>
+
+        <!-- Error message display -->
+        <p th:if="${message}" th:text="${message}" class="text-danger text-center mt-3"></p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+>>>>>>> origin/gwen-branch
 </body>
 </html>
