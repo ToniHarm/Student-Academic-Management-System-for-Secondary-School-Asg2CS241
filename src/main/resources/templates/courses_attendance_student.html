@@ -13,9 +13,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <title>Student Courses</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Records for </title>
 </head>
 
 <body>
@@ -33,7 +30,6 @@
             <button class="btn btn-danger" type="submit">Logout</button>
         </form>
     </div>
-<h2>Attendance Records for </h2>
 
     <div class="ms-auto" style="position: relative">
         <button class="btn btn-light" type="button" onclick="window.history.back();">
@@ -72,32 +68,6 @@
     </table>
 </div>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>Week</th>
-        <th>Student ID</th>
-        <th>Student Name</th>
-        <th>Monday</th>
-        <th>Tuesday</th>
-        <th>Wednesday</th>
-        <th>Thursday</th>
-        <th>Friday</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="record : ${attendanceRecords}">
-        <td th:text="${record.week}"></td>
-        <td th:text="${record.student.stuid}"></td>
-        <td th:text="${record.student.fname + ' ' + record.student.lname}"></td>
-        <td th:text="${record.day_of_week == 'Monday' ? record.status : ''}"></td>
-        <td th:text="${record.day_of_week == 'Tuesday' ? record.status : ''}"></td>
-        <td th:text="${record.day_of_week == 'Wednesday' ? record.status : ''}"></td>
-        <td th:text="${record.day_of_week == 'Thursday' ? record.status : ''}"></td>
-        <td th:text="${record.day_of_week == 'Friday' ? record.status : ''}"></td>
-    </tr>
-    </tbody>
-</table>
 
 </body>
 </html>

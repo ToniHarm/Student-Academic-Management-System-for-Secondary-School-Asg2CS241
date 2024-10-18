@@ -36,11 +36,6 @@
     </div>
 </nav>
 
-<form action="#" th:action="@{/CourseAdminDashboard/registerStudentToClass/save}" th:object="${studentCourseRegistrationDTO}" method="post">
-    <div>
-        <label for="studentId">Student ID:</label>
-        <input type="number" id="studentId" th:field="*{studentId}" required />
-    </div>
 <!-- Main Container -->
 <div class="container mt-5">
     <h2 class="text-center mb-4">Assign Student to Class</h2>
