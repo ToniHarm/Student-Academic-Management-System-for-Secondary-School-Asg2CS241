@@ -24,7 +24,6 @@
 
 
 <div class="row" style="padding: 20px">
-<<<<<<< HEAD
     <!-- Profile Container -->
     <div class="col-md-3 text-center">
         <img src="/images/parents.png" alt="Parents Profile Picture" class="profile-img" width="150" height="150">
@@ -63,46 +62,6 @@
         </div>
     </div>
 </div>
-=======
-        <!-- Profile Container -->
-        <div class="col-md-3 text-center">
-            <img src="/images/parents.png" alt="Parents Profile Picture" class="profile-img" width="150" height="150">
-            <h3>Welcome Parents !</h3>
-        </div>
-
-        <!-- ButtonInbox Container -->
-        <div class="col-md-9">
-            <a class="btn btn-primary mb-3" th:href="@{'/ParentDashboard/' + ${parentId} + '/messages'}">Your Inbox</a>
-
-            <!-- Student Table -->
-            <div class="table-responsive">
-                <table class="table table-bordered" >
-                    <thead>
-                    <tr>
-                        <th>Student ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>View Courses</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!-- Loop through the students linked to the parent -->
-                    <tr th:each="student : ${students}">
-                        <td th:text="${student.stuid}"></td>
-                        <td th:text="${student.fname}"></td>
-                        <td th:text="${student.lname}"></td>
-                        <td>
-                            <a th:href="@{'/ParentDashboard/' + ${parentId} + '/studentCourses/' + ${student.stuid} }">
-                                <button class="btn btn-primary">View Courses</button>
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
->>>>>>> origin/gwen-branch
 
 
 <script src="/js/bootstrap.bundle.js"></script> <!-- Bootstrap JS -->

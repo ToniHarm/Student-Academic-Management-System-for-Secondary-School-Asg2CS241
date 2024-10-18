@@ -37,67 +37,6 @@
 </nav>
 
 <!-- Main Container for Registration Form -->
-<<<<<<< HEAD
-<div class="container mt-4" style="padding: 20px">
-    <h1 class="text-center mb-4">Course Instructor Registration - Sign Up</h1>
-
-    <div class="bg-light p-4 rounded shadow" style="max-width: 600px; margin: 0 auto;">
-        <form th:action="@{/save3}" th:object="${CourseInstructor}" method="post" style="max-width: 600px; margin: 0 auto;">
-            <div class="m-3">
-                <div class="form-group row">
-                    <label class="col-4 col-form-label">E-mail: </label>
-                    <div class="col-8">
-                        <input type="email" th:field="*{email}" class="form-control" required />
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-4 col-form-label">Password: </label>
-                    <div class="col-8">
-                        <input type="password" th:field="*{password}" class="form-control" required minlength="6" maxlength="10"/>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-4 col-form-label">First Name: </label>
-                    <div class="col-8">
-                        <input type="text" id="fname" name="FName" th:field="*{fname}" class="form-control" required placeholder="Enter your first name">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-4 col-form-label">Last Name: </label>
-                    <div class="col-8">
-                        <input type="text" id="lname" name="LName" th:field="*{lname}" class="form-control" required placeholder="Enter your last name">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-4 col-form-label">Date of Birth: </label>
-                    <div class="col-8">
-                        <input type="date" id="dob" name="DOB" th:field="*{dob}" class="form-control" required>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-4 col-form-label">Phone: </label>
-                    <div class="col-8">
-                        <input type="tel" id="phone" name="Phone" th:field="*{phone}" class="form-control" required placeholder="Enter your phone number">
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-4 col-form-label">Address: </label>
-                    <div class="col-8">
-                        <textarea id="address" name="Address" rows="3" th:field="*{address}" class="form-control" required placeholder="Enter your address"></textarea>
-                    </div>
-                </div>
-
-                <div>
-                    <button type="submit" class="btn btn-primary">Sign Up</button>
-                </div>
-            </div>
-=======
 <div class="container mt-4">
     <h1 class="text-center mb-4">Course Instructor Registration - Sign Up</h1>
 
@@ -141,7 +80,6 @@
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </div>
->>>>>>> origin/gwen-branch
         </form>
     </div>
 </div>
