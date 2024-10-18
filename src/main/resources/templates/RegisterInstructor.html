@@ -60,10 +60,22 @@
                 <div class="form-group row">
                     <label class="col-4 col-form-label">First Name: </label>
                     <div class="col-8">
+                        <input type="text" id="fname" name="FName" th:field="*{fname}" required placeholder="Enter your first name">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-4 col-form-label">First Name: </label>
+                    <div class="col-8">
                         <input type="text" id="fname" name="FName" th:field="*{fname}" class="form-control" required placeholder="Enter your first name">
                     </div>
                 </div>
 
+                <div class="form-group row">
+                    <label class="col-4 col-form-label">Last Name: </label>
+                    <div class="col-8">
+                        <input type="text" id="lname" name="LName" th:field="*{lname}" required placeholder="Enter your last name">
+                    </div>
+                </div>
                 <div class="form-group row">
                     <label class="col-4 col-form-label">Last Name: </label>
                     <div class="col-8">
@@ -74,6 +86,12 @@
                 <div class="form-group row">
                     <label class="col-4 col-form-label">Date of Birth: </label>
                     <div class="col-8">
+                        <input type="date" id="dob" name="DOB" th:field="*{dob}" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-4 col-form-label">Date of Birth: </label>
+                    <div class="col-8">
                         <input type="date" id="dob" name="DOB" th:field="*{dob}" class="form-control" required>
                     </div>
                 </div>
@@ -81,10 +99,22 @@
                 <div class="form-group row">
                     <label class="col-4 col-form-label">Phone: </label>
                     <div class="col-8">
+                        <input type="tel" id="phone" name="Phone" th:field="*{phone}" required placeholder="Enter your phone number">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-4 col-form-label">Phone: </label>
+                    <div class="col-8">
                         <input type="tel" id="phone" name="Phone" th:field="*{phone}" class="form-control" required placeholder="Enter your phone number">
                     </div>
                 </div>
 
+                <div class="form-group row">
+                    <label class="col-4 col-form-label">Address: </label>
+                    <div class="col-8">
+                        <textarea id="address" name="Address" rows="3" th:field="*{address}" required placeholder="Enter your address"></textarea>
+                    </div>
+                </div>
                 <div class="form-group row">
                     <label class="col-4 col-form-label">Address: </label>
                     <div class="col-8">

@@ -9,6 +9,7 @@
 <form method="POST" th:action="@{'/CourseInstructorDashboard/'+ ${courseInstructorId}+'/attendance/' + ${classid} + '/save'}" th:object="${attendance}">
     <label for="student">Select Student:</label>
     <select name="studentId" id="student">
+        <option value="" disabled selected>Select a student</option> <!-- Placeholder -->
         <option th:each="student : ${students}"
                 th:value="${student.stuid}"
                 th:text="${student.fname + ' ' + student.lname}"></option>
