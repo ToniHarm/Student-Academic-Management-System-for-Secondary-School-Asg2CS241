@@ -2,36 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parent Dashboard</title>
+    <link rel="stylesheet" href="/css/bootstrap.css"> <!-- Bootstrap CSS -->
+
 </head>
 <body>
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Logout</button>
-</form>
-<h1>Parent Dashboard</h1>
-<a th:href="@{'/ParentDashboard/' + ${parentId} +'/messages'}">Inbox</a>
-<table border="1">
-    <thead>
-    <tr>
-        <th>Student ID</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>View Courses</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Loop through the students linked to the parent -->
-    <tr th:each="student : ${students}">
-        <td th:text="${student.stuid}"></td>
-        <td th:text="${student.fname}"></td>
-        <td th:text="${student.lname}"></td>
-        <td>
-            <a th:href="@{'/ParentDashboard/' + ${parentId} + '/studentCourses/' + ${student.stuid} }">
-                <button>View Courses</button>
-            </a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Logo on the left side -->
+        <a class="navbar-brand" href="#">
+            <img src="/images/logo.jpg" alt=" student Logo" width="50" height="50"> <!-- Update with the correct path for your logo -->
+            Parent Dashboard
+        </a>
+
+        <form th:action="@{/logout}" method="post" class="d-flex">
+            <button class="btn btn-danger" type="submit">Logout</button>
+        </form>
+    </div>
+</nav>
+
+
+<div class="row" style="padding: 20px">
+    <!-- Profile Container -->
+    <div class="col-md-3 text-center">
+        <img src="/images/parents.png" alt="Parents Profile Picture" class="profile-img" width="150" height="150">
+        <h3>Welcome Parents !</h3>
+    </div>
+
+    <!-- ButtonInbox Container -->
+    <div class="col-md-9">
+        <a class="btn btn-primary mb-3" th:href="@{'/ParentDashboard/' + ${parentId} + '/messages'}">Your Inbox</a>
+
+        <!-- Student Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered" >
+                <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>View Courses</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Loop through the students linked to the parent -->
+                <tr th:each="student : ${students}">
+                    <td th:text="${student.stuid}"></td>
+                    <td th:text="${student.fname}"></td>
+                    <td th:text="${student.lname}"></td>
+                    <td>
+                        <a th:href="@{'/ParentDashboard/' + ${parentId} + '/studentCourses/' + ${student.stuid} }">
+                            <button class="btn btn-primary">View Courses</button>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/bootstrap.bundle.js"></script> <!-- Bootstrap JS -->
 </body>
 </html>
