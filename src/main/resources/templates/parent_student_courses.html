@@ -4,11 +4,50 @@
     <meta charset="UTF-8">
     <title>Student Courses</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #343a40;
+        }
+        table {
+            margin: 0 auto;
+            width: 80%;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        th {
+            background-color: #125fb1;
+            color: white;
+            text-align: center;
+        }
+        td {
+            text-align: center;
+        }
+        .btn {
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
+
+<!-- Breadcrumbs -->
+<nav aria-label="breadcrumb" class="mt-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a th:href="@{/ParentDashboard}">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Student Courses </li>
+    </ol>
+</nav>
+
 <h1 th:text="'Courses for ' + ${student.fname} + ' ' + ${student.lname}"></h1>
 
-<table border="1">
+<table class="table table-striped table-bordered">
     <thead>
     <tr>
         <th>Course ID</th>
@@ -23,13 +62,14 @@
         <td th:text="${course.classid}"></td>
         <td th:text="${course.classname}"></td>
         <td th:text="${course.classdescription}"></td>
-
         <td>
             <a class="btn btn-primary" th:href="@{'/ParentDashboard/' + ${parentId} + '/studentCourses/' + ${student.stuid} + '/attendance/' + ${course.classid}}">Attendance</a>
         </td>
-
     </tr>
     </tbody>
 </table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

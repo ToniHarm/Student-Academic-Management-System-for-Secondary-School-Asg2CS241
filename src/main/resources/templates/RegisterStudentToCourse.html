@@ -29,15 +29,19 @@
         </form>
     </div>
 
-    <div class="ms-auto" style="position: relative">
-        <button class="btn btn-light" type="button" onclick="window.history.back();">
-            <i class="bi bi-arrow-left"> Go back</i>
-        </button>
-    </div>
 </nav>
 
 <!-- Main Container -->
 <div class="container mt-5">
+
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mt-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/CourseAdminDashboard}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Student to Course Registration </li>
+        </ol>
+    </nav>
+
     <h2 class="text-center mb-4">Assign Student to Class</h2>
 
     <form th:action="@{/CourseAdminDashboard/registerStudentToClass/save}" th:object="${studentCourseRegistrationDTO}" method="post" class="mx-auto" style="max-width: 600px;">

@@ -66,10 +66,23 @@
             text-align: center;
             color: red;
         }
+
     </style>
 </head>
 <body>
-<h1>Save Student Attendance</h1>
+
+<!-- Breadcrumbs -->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a th:href="@{/CourseInstructorDashboard}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a th:href="@{'/CourseInstructorDashboard/'+ ${courseInstructorId}}">Courses</a></li>
+        <li class="breadcrumb-item"><a th:href="@{'/CourseInstructorDashboard/'+ ${courseInstructorId}+'/attendance/' + ${classid}}">Attendance Record</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add Attendance</li>
+    </ol>
+</nav>
+
+
+<h1>Add Student Attendance</h1>
 <div class="add-form">
     <form method="POST" th:action="@{'/CourseInstructorDashboard/'+ ${courseInstructorId}+'/attendance/' + ${classid} + '/save'}" th:object="${attendance}">
         <div class="form-group">

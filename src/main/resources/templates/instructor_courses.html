@@ -7,6 +7,15 @@
 </head>
 <body>
 <div class="container">
+
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" style="margin-top: 20px">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/CourseInstructorDashboard}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Courses</li>
+        </ol>
+    </nav>
+
     <h1 class="text-center">Courses Assigned</h1>
     <table class="table table-striped table-hover">
         <thead>

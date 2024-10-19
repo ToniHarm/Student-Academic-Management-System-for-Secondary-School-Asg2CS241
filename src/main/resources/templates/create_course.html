@@ -28,14 +28,18 @@
         </form>
     </div>
 
-    <div class="ms-auto" style="position: relative">
-        <button class="btn btn-light" type="button" onclick="window.history.back();">
-            <i class="bi bi-arrow-left"> Go back</i>
-        </button>
-    </div>
 </nav>
 
 <div class="container text-center">
+
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mt-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/CourseAdminDashboard}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Create New Course </li>
+        </ol>
+    </nav>
+
     <div>
         <h1>Create New Course</h1>
     </div>

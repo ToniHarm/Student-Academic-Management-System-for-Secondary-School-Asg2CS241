@@ -145,8 +145,18 @@ public class CourseController {
 
         } catch (Exception e) {
             // Handle any unexpected exceptions
-            model.addAttribute("message", "An error occurred while saving attendance: Student Attendance already exist");
-            return "save_attendance";  // Redirect to an error page or show the error in the same form
+            model.addAttribute("message", "An error occurred while saving attendance: Student Attendance already exists");
+
+            // Retrieve the course and students to populate the dropdown
+            Course course = userService.getCourseById(classId);
+            Set<Student> students = userService.getStudentsByCourseId(classId);
+
+            // Add attributes to the model for the view
+            model.addAttribute("course", course);
+            model.addAttribute("students", students);
+            model.addAttribute("courseInstructorId", courseInstructorId);
+
+            return "save_attendance";  // Return the Thymeleaf template name with error message
         }
     }
 

@@ -30,17 +30,18 @@
         </form>
     </div>
 
-    <div class="ms-auto" style="position: relative">
-        <button class="btn btn-light" type="button" onclick="window.history.back();">
-            <i class="bi bi-arrow-left"> Go back</i>
-        </button>
-    </div>
 </nav>
 
 <div class="container mt-4" style="padding: 20px">
     <h1 class="text-center mb-4">Admin Registration - Sign Up</h1>
 
-
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mt-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/CourseAdminDashboard}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Admin Registration </li>
+        </ol>
+    </nav>
 
     <div class="bg-light p-4 rounded shadow" style="max-width: 600px; margin: 0 auto;">
         <form th:action="@{/save4}" th:object="${CourseAdmin} " method="post" style="max-width: 600px; margin: 0 auto;">

@@ -28,16 +28,19 @@
             <button class="btn btn-danger" type="submit">Logout</button>
         </form>
     </div>
-
-    <div class="ms-auto" style="position: relative">
-        <button class="btn btn-light" type="button" onclick="window.history.back();">
-            <i class="bi bi-arrow-left"> Go back</i>
-        </button>
-    </div>
 </nav>
 
 <!-- Main Container for Registration Form -->
 <div class="container mt-4" style="padding: 20px">
+
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mt-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/CourseAdminDashboard}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Course Instructor Registration </li>
+        </ol>
+    </nav>
+
     <h1 class="text-center mb-4">Course Instructor Registration - Sign Up</h1>
 
     <div class="bg-light p-4 rounded shadow" style="max-width: 600px; margin: 0 auto;">
