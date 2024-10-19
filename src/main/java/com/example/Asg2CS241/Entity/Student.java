@@ -22,6 +22,22 @@ public class Student {
     private String password;
 
 
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
+
+    public Parent getParent() {
+        return parent;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
+    }
+
+
+
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", nullable = false)  // Foreign key for Parent
     private Parent parent;
@@ -97,9 +113,7 @@ public class Student {
         this.fname = fname;
     }
 
-//    public void setLinkcode(Integer linkcode) {
-//        this.linkcode = linkcode;
-//    }
+
 
     public void setLname(String lname) {
         this.lname = lname;

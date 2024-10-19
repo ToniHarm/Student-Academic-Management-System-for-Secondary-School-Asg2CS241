@@ -30,6 +30,9 @@ public class UserService {
     @Autowired
     private CourseInstructorRepository courTeacherRepo;
 
+    @Autowired
+    private ClassRepository classRepo;
+
 
     public void save(Student Student) {
         stuRepo.save(Student);
@@ -46,6 +49,10 @@ public class UserService {
 
     public void save(CourseAdmin CourseAdmin){
         courAdminRepo.save(CourseAdmin);
+    }
+
+    public void save(Course Course){
+        classRepo.save(Course);
     }
 
 

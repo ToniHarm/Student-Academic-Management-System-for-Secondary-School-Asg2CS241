@@ -2,7 +2,9 @@ package com.example.Asg2CS241.Controller;
 
 import com.example.Asg2CS241.Entity.*;
 
+import com.example.Asg2CS241.Repository.AttendanceRepository;
 import com.example.Asg2CS241.Repository.MessageRepository;
+import com.example.Asg2CS241.Service.AttendanceService;
 import com.example.Asg2CS241.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,6 +63,7 @@ public class CourseController {
         Course course = userService.getCourseById(classId);
         Map<String, Double> attendancePercentages = userService.getAttendancePercentages(classId);
 
+        model.addAttribute("classId", classId);
         model.addAttribute("attendancePercentages", attendancePercentages);
         model.addAttribute("course", course);
         model.addAttribute("courseInstructorId", instructorId);
@@ -241,6 +244,8 @@ public class CourseController {
 
     @Autowired
     MessageRepository messageRepository;
+    @Autowired
+    private AttendanceService attendanceService;
 
     @GetMapping("/ParentDashboard/{parentId}/messages")
     public String getParentMessages(@PathVariable("parentId") Long parentId, Model model) {
@@ -250,16 +255,20 @@ public class CourseController {
     }
 
     // Search attendance
-    @GetMapping("/CourseInstructorDashboard/{courseInstructorId}/attendance/search")
+    @GetMapping("/CourseInstructorDashboard/{courseInstructorId}/attendance/search/{classId}")
     public String searchAttendance(@PathVariable Long courseInstructorId,
+                                   @PathVariable Long classId,
                                    @RequestParam int week,
                                    @RequestParam String dayOfWeek,
                                    @RequestParam Long studentId,
                                    Model model) {
-        Optional<Attendance> searchedRecord = attendanceService.findByStudentIdAndWeekAndDayOfWeek(studentId, week, dayOfWeek);
+        // Find the attendance record
+        Optional<Attendance> searchedRecord = attendanceService.findByWeekAndStudentIdAndDayOfWeekAndClassId(studentId, classId, week, dayOfWeek);
 
         if (searchedRecord.isPresent()) {
             model.addAttribute("searchedAttendanceRecord", searchedRecord.get());
+            Map<String, Double> attendancePercentages = userService.getAttendancePercentages(classId);
+            model.addAttribute("attendancePercentages", attendancePercentages); // Add percentages to the model
             model.addAttribute("courseInstructorId", courseInstructorId);
             return "courses_attendance_instructor"; // Return a detail view for the attendance record
         } else {
@@ -268,54 +277,60 @@ public class CourseController {
         }
     }
 
+
     // Update attendance record
-    @PostMapping("/CourseInstructorDashboard/{courseInstructorId}/attendance/edit")
+    @PostMapping("/CourseInstructorDashboard/{courseInstructorId}/attendance/edit/{classId}")
     public String updateAttendance(@PathVariable Long courseInstructorId,
+                                   @PathVariable Long classId,
                                    @RequestParam Long studentId,
                                    @RequestParam int week,
                                    @RequestParam String dayOfWeek,
                                    @RequestParam String status,
                                    Model model) {
         // Find the existing attendance record
-        Optional<Attendance> existingRecord = attendanceService.findByStudentIdAndWeekAndDayOfWeek(studentId, week, dayOfWeek);
+        Optional<Attendance> existingRecord = attendanceService.findByWeekAndStudentIdAndDayOfWeekAndClassId(studentId, classId, week, dayOfWeek);
 
         if (existingRecord.isPresent()) {
             // Update the record with the new status
             Attendance attendance = existingRecord.get();
             attendance.setStatus(status);
             attendanceService.saveAttendance(attendance); // Save updated record
-
+            Map<String, Double> attendancePercentages = userService.getAttendancePercentages(classId);
+            model.addAttribute("attendancePercentages", attendancePercentages);
             // Redirect to the updated attendance page
 //            return "redirect:/CourseInstructorDashboard/" + courseInstructorId + "/attendance/{classid}";
-            return "courses_attendance_instructor";
+            return "redirect:/CourseInstructorDashboard/" + courseInstructorId + "/attendance/" + classId;
         } else {
             model.addAttribute("error", "No record found for the specified student, week, and day.");
             return "courses_attendance_instructor"; // Return with error
         }
     }
 
-    // Delete attendance record
-    @PostMapping("/CourseInstructorDashboard/{courseInstructorId}/attendance/delete")
+    @PostMapping("/CourseInstructorDashboard/{courseInstructorId}/attendance/delete/{classId}")
     public String deleteAttendance(@PathVariable Long courseInstructorId,
+                                   @PathVariable Long classId,
                                    @RequestParam Long studentId,
                                    @RequestParam int week,
                                    @RequestParam String dayOfWeek,
                                    Model model) {
         // Find the existing attendance record
-        Optional<Attendance> existingRecord = attendanceService.findByStudentIdAndWeekAndDayOfWeek(studentId, week, dayOfWeek);
+        Optional<Attendance> existingRecord = attendanceService.findByWeekAndStudentIdAndDayOfWeekAndClassId(studentId, classId, week, dayOfWeek);
 
         if (existingRecord.isPresent()) {
             // Delete the record
             attendanceService.deleteAttendance(existingRecord.get());
 
+            Map<String, Double> attendancePercentages = userService.getAttendancePercentages(classId);
+            model.addAttribute("attendancePercentages", attendancePercentages);
+
             // Redirect to the attendance page after deletion
-            return "courses_attendance_instructor";
-//            return "redirect:/CourseInstructorDashboard/" + courseInstructorId + "/attendance/{classid}";
+            return "redirect:/CourseInstructorDashboard/" + courseInstructorId + "/attendance/" + classId;
         } else {
             model.addAttribute("error", "No record found to delete.");
             return "courses_attendance_instructor"; // Return with error
         }
     }
+
 
 
 

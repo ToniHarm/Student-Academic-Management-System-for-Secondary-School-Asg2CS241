@@ -1,6 +1,8 @@
 package com.example.Asg2CS241.Repository;
 
 import com.example.Asg2CS241.Entity.Attendance;
+import com.example.Asg2CS241.Entity.Course;
+import com.example.Asg2CS241.Entity.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
@@ -40,10 +43,19 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     @Query("SELECT a FROM Attendance a WHERE a.student.stuid = :studentId AND a.course.classid = :classId ORDER BY a.week ASC")
     List<Attendance> findByStudentIdAndClassId(@Param("studentId") Long studentId, @Param("classId") Long classId);
 
-    // Find attendance by student ID, week, and day of the week
-    @Query("SELECT a FROM Attendance a WHERE a.student.stuid = :studentId AND a.week = :week AND a.day_of_week = :dayOfWeek")
-    Optional<Attendance> findByWeekAndStudentIdAndDayOfWeek(@Param("studentId") Long studentId,
-                                                            @Param("week") int week,
-                                                            @Param("dayOfWeek") String dayOfWeek);
 
+    @Query("SELECT "
+            + "(SUM(CASE WHEN a.status = 'present' THEN 1 ELSE 0 END) / COUNT(a)) * 100 AS presentPercentage, "
+            + "(SUM(CASE WHEN a.status = 'late' THEN 1 ELSE 0 END) / COUNT(a)) * 100 AS latePercentage, "
+            + "(SUM(CASE WHEN a.status = 'absent' THEN 1 ELSE 0 END) / COUNT(a)) * 100 AS absentPercentage "
+            + "FROM Attendance a WHERE a.course.classid = :courseId")
+    Map<String, Double> findAttendancePercentagesByCourseId(@Param("courseId") Long courseId);
+
+    @Query("SELECT a FROM Attendance a WHERE a.student.stuid = :studentId AND a.course.classid = :classId AND a.week = :week AND a.day_of_week = :dayOfWeek")
+    Optional<Attendance> findByWeekAndStudentIdAndDayOfWeekAndClassId(
+            @Param("studentId") Long studentId,
+            @Param("classId") Long classId,
+            @Param("week") int week,
+            @Param("dayOfWeek") String dayOfWeek
+    );
 }
