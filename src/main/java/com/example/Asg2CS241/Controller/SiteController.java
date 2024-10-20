@@ -1,21 +1,18 @@
 package com.example.Asg2CS241.Controller;
 
 import com.example.Asg2CS241.Entity.*;
-import com.example.Asg2CS241.Repository.StudentRepository;
 import com.example.Asg2CS241.Security.CustomCourseAdminDetails;
 import com.example.Asg2CS241.Security.CustomCourseInstructorDetails;
 import com.example.Asg2CS241.Security.CustomParentDetails;
 import com.example.Asg2CS241.Security.CustomStudentDetails;
+import com.example.Asg2CS241.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import com.example.Asg2CS241.Service.UserService;
 
-import java.util.Optional;
 import java.util.Set;
 
 
@@ -217,6 +214,7 @@ public class SiteController {
 
         return "redirect:/CourseAdminDashboard";  // Redirect to a success or confirmation page
     }
+
 
 
 
