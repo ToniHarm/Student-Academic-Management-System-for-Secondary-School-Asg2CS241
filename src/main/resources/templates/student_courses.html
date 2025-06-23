@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="shortcut icon" href="/images/logo.jpg" type="image/x-icon">
+
+    <title>Student Courses</title>
+</head>
+
+<body>
+
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Logo on the left side -->
+        <a class="navbar-brand" href="#">
+            <img src="/images/logo.jpg" alt="Student Logo" width="50" height="50">
+            Courses Enrolled
+        </a>
+
+        <!-- Logout button on the right -->
+        <form th:action="@{/logout}" method="post" class="d-flex">
+            <button class="btn btn-danger" type="submit">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<!-- Main content: Student's courses table -->
+<div class="container mt-4">
+
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mt-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/StudentDashboard}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Course Enrolled </li>
+        </ol>
+    </nav>
+
+    <h2 class="text-center mb-4">Courses Enrolled</h2>
+
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Course ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody th:if="${listCourses}">
+        <tr th:each="course : ${listCourses}">
+            <td th:text="${course.classid}">Course ID</td>
+            <td th:text="${course.classname}">Course Name</td>
+            <td th:text="${course.classdescription}">Description</td>
+            <td>
+                <a class="btn btn-primary" th:href="@{'/StudentDashboard/' + ${stuid} + '/attendance/' + ${course.classid}}">
+                    View Attendance
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

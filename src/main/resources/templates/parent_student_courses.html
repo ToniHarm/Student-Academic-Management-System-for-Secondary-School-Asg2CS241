@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Courses</title>
+    <link rel="shortcut icon" href="/images/logo.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #343a40;
+        }
+        table {
+            margin: 0 auto;
+            width: 80%;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        th {
+            background-color: #125fb1;
+            color: white;
+            text-align: center;
+        }
+        td {
+            text-align: center;
+        }
+        .btn {
+            margin: 5px;
+        }
+        .bg-light {
+            background-color: #f8f9fa !important; /* Light grey background */
+        }
+
+        .btn-background {
+
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .breadcrumb-item a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+
+        nav {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="bg-light py-2">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <!-- Breadcrumb on the left -->
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a th:href="@{/ParentDashboard}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Student Courses</li>
+        </ol>
+        <!-- Logout button on the right -->
+        <form th:action="@{/logout}" method="post">
+            <button class="btn btn-danger btn-background" type="submit">Logout</button>
+        </form>
+    </div>
+</nav>
+
+
+<h1 th:text="'Courses for ' + ${student.fname} + ' ' + ${student.lname}"></h1>
+
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>Course ID</th>
+        <th>Course Name</th>
+        <th>Description</th>
+        <th>Attendance</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Loop through the courses -->
+    <tr th:each="course : ${listCourses}">
+        <td th:text="${course.classid}"></td>
+        <td th:text="${course.classname}"></td>
+        <td th:text="${course.classdescription}"></td>
+        <td>
+            <a class="btn btn-primary" th:href="@{'/ParentDashboard/' + ${parentId} + '/studentCourses/' + ${student.stuid} + '/attendance/' + ${course.classid}}">Attendance</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

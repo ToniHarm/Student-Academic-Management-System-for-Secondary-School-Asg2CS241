@@ -21,6 +21,10 @@ public class CustomStudentDetails implements UserDetails {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_STUDENT"));
     }
 
+    public Long getId() {
+        return student.getStuid();
+    }
+
     @Override
     public String getPassword() {
         return student.getPassword();

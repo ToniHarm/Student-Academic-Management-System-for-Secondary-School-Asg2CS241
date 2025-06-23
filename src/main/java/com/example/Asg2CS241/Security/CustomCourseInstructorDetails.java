@@ -19,6 +19,9 @@ public class CustomCourseInstructorDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_INSTRUCTOR"));
     }
+    public Long getId() {
+        return courseInstructor.getCourseteacherid();  // This should correctly return the ID
+    }
 
     @Override
     public String getPassword() {

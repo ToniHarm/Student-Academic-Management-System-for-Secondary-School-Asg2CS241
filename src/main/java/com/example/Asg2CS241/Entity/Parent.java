@@ -3,6 +3,9 @@ package com.example.Asg2CS241.Entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name =  "parent")
 public class Parent {
@@ -18,6 +21,17 @@ public class Parent {
     private String phone;
     private String address;
     private String password;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Student> students = new HashSet<>();
+
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<Student> students) {
+        this.students = students;
+    }
 
     public Long getParentid() {
         return parentid;

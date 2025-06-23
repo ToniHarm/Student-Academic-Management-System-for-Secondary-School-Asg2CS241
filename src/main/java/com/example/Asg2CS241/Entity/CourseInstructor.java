@@ -3,6 +3,9 @@ package com.example.Asg2CS241.Entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name =  "courseteacher")
 public class CourseInstructor {
@@ -11,7 +14,7 @@ public class CourseInstructor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private Long courteaherid;
+    private Long courseteacherid;
     private String email;
     private String dob;
     private String fname;
@@ -20,12 +23,22 @@ public class CourseInstructor {
     private String address;
     private String password;
 
-    public Long getCourteaherid() {
-        return courteaherid;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "teacher_class",joinColumns = @JoinColumn(name = "courseteacher_id",referencedColumnName = "courseteacherid"),  // Foreign key for student
+            inverseJoinColumns = @JoinColumn(name = "class_id",referencedColumnName = "classid")  // Foreign key for course
+    )
+    private Set<Course> courses = new HashSet<>();
+
+    public Set<Course> getCourses() {
+        return courses;
     }
 
-    public void setCourteaherid(Long courteaherid) {
-        this.courteaherid = courteaherid;
+    public Long getCourseteacherid() {
+        return courseteacherid;
+    }
+
+    public void setCourseteacherid(Long courteaherid) {
+        this.courseteacherid = courteaherid;
     }
 
     public String getEmail() {

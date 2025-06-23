@@ -20,6 +20,10 @@ public class CustomCourseAdminDetails implements UserDetails {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
+    public Long getId() {
+        return courseAdmin.getCourseadminid();
+    }
+
     @Override
     public String getPassword() {
         return courseAdmin.getPassword();

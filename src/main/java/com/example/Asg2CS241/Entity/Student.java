@@ -3,6 +3,9 @@ package com.example.Asg2CS241.Entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name =  "student")
 public class Student {
@@ -17,8 +20,38 @@ public class Student {
     private String phone;
     private String address;
     private String password;
-    private Integer linkcode;
 
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
+
+    public Parent getParent() {
+        return parent;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
+    }
+
+
+
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id", nullable = false)  // Foreign key for Parent
+    private Parent parent;
+
+
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "student_class",joinColumns = @JoinColumn(name = "student_id",referencedColumnName = "stuid"),  // Foreign key for student
+            inverseJoinColumns = @JoinColumn(name = "class_id",referencedColumnName = "classid")  // Foreign key for course
+    )
+    private Set<Course> courses = new HashSet<>();
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
 
 
 
@@ -30,9 +63,7 @@ public class Student {
         return dob;
     }
 
-    public Integer getLinkcode() {
-        return linkcode;
-    }
+
 
     public Long getStuid() {
         return stuid;
@@ -82,9 +113,7 @@ public class Student {
         this.fname = fname;
     }
 
-    public void setLinkcode(Integer linkcode) {
-        this.linkcode = linkcode;
-    }
+
 
     public void setLname(String lname) {
         this.lname = lname;
